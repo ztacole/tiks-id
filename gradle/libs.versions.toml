@@ -16,7 +16,7 @@ composeBom = "2024.09.00"
 lifecycleViewmodelCompose = "2.8.4"
 uiTextGoogleFonts = "1.9.4"
 navigationCompose = "2.9.5"
-navigationRuntimeKtx = "2.9.6"
+coilVersion = "2.7.0"
 
 [libraries]
 androidx-compose-material-icons = { module = "androidx.compose.material:material-icons-extended"}
@@ -47,7 +47,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVer
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorVersion" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
