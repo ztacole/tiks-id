@@ -1,4 +1,4 @@
-package com.zetta.tiksid.ui.navigation
+package com.zetta.tiksid.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import com.zetta.tiksid.R
+import com.zetta.tiksid.navigation.Screen
 
 sealed class BottomNavItem(
     val label: String,
@@ -61,7 +62,7 @@ fun BottomNavBar(
     )
 
     Surface(
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+        color = MaterialTheme.colorScheme.surface,
         tonalElevation = NavigationBarDefaults.Elevation
     ) {
         Row(

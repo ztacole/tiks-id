@@ -1,15 +1,11 @@
-package com.zetta.tiksid.ui.navigation
+package com.zetta.tiksid.navigation
 
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOut
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,12 +14,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
+import com.zetta.tiksid.ui.components.BottomNavBar
 import com.zetta.tiksid.ui.screen.auth.signin.SignIn
 import com.zetta.tiksid.ui.screen.auth.signup.SignUp
 import com.zetta.tiksid.ui.screen.movie.browse.Browse
@@ -74,10 +72,10 @@ fun AppNavigation(
                 slideInHorizontally(animationSpec = tween(350, delayMillis = 50, easing = EaseOut), initialOffsetX = { it })
             },
             exitTransition = {
-                fadeOut(animationSpec = tween(500, easing = EaseOut))
+                fadeOut(animationSpec = tween(300, easing = EaseOut))
             },
             popEnterTransition = {
-                fadeIn(animationSpec = tween(500, easing = EaseOut))
+                fadeIn(animationSpec = tween(400, easing = EaseOut))
             },
             popExitTransition = {
                 slideOutHorizontally(animationSpec = tween(350, delayMillis = 50, easing = EaseOut), targetOffsetX = { it })
@@ -121,7 +119,14 @@ fun AppNavigation(
                     onNavigateToTicketDetail = { navController.navigate(Screen.TicketDetail.createRoute(it)) }
                 )
             }
-            composable(Screen.MovieDetail.route) {
+            composable(
+                route = Screen.MovieDetail.route,
+                arguments = listOf(
+                    navArgument("movieId", builder = {
+                        type = NavType.StringType
+                    })
+                )
+            ) {
                 val movieId = it.arguments?.getString("movieId")
                 if (movieId != null) {
                     MovieDetail(
@@ -131,7 +136,14 @@ fun AppNavigation(
                     )
                 }
             }
-            composable(Screen.TicketDetail.route) {
+            composable(
+                route = Screen.TicketDetail.route,
+                arguments = listOf(
+                    navArgument("ticketId", builder = {
+                        type = NavType.StringType
+                    })
+                )
+            ) {
                 val ticketId = it.arguments?.getString("ticketId")
                 if (ticketId != null) {
                     TicketDetail(

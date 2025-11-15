@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 val session = sessionManager.getSession()
-                startDestination = session?.let { Screen.Home } ?: Screen.Home
+                startDestination = session?.let { Screen.Home } ?: Screen.SignIn
 
                 delay(100)
                 keepSplash = false
