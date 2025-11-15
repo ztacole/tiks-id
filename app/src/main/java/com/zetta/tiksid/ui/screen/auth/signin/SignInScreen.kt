@@ -88,7 +88,7 @@ fun SignInScreen(
     ) {
         Row(
             modifier = Modifier
-                .weight(0.1f),
+                .padding(top = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -103,10 +103,10 @@ fun SignInScreen(
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
+        Spacer(Modifier.height(150.dp))
         Box(
             modifier = modifier
-                .fillMaxSize()
-                .weight(1f),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -197,8 +197,10 @@ fun SignInScreen(
                 )
             }
         }
+        Spacer(Modifier.height(180.dp))
         Row(
-            modifier = Modifier.weight(0.1f),
+            modifier = Modifier
+                .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(

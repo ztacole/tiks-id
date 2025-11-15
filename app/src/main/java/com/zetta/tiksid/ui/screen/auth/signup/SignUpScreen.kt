@@ -91,7 +91,7 @@ fun SignUpScreen(
     ) {
         Row(
             modifier = Modifier
-                .weight(0.1f),
+                .padding(top = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -106,10 +106,10 @@ fun SignUpScreen(
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
+        Spacer(Modifier.height(56.dp))
         Box(
             modifier = modifier
-                .fillMaxSize()
-                .weight(1f),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -256,8 +256,10 @@ fun SignUpScreen(
                 )
             }
         }
+        Spacer(Modifier.height(120.dp))
         Row(
-            modifier = Modifier.weight(0.1f),
+            modifier = Modifier
+                .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(

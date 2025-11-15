@@ -4,7 +4,6 @@ import com.zetta.tiksid.network.ApiClient
 import com.zetta.tiksid.network.SessionManager
 import com.zetta.tiksid.ui.screen.auth.signin.SignInViewModel
 import com.zetta.tiksid.ui.screen.auth.signup.SignUpViewModel
-import com.zetta.tiksid.ui.screen.movie.MovieViewModel
 import com.zetta.tiksid.utils.ResourceProvider
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -17,5 +16,4 @@ val appModule = module {
 
     viewModel { SignInViewModel(get()) }
     viewModel { SignUpViewModel(get()) }
-    viewModel { MovieViewModel() }
 }

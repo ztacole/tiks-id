@@ -5,11 +5,11 @@ import com.zetta.tiksid.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-class TiksIDApp: Application() {
+class TiksIDApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            androidContext(this@TiksIDApp)
+            androidContext(this@TiksIDApplication)
             modules(appModule)
         }
     }

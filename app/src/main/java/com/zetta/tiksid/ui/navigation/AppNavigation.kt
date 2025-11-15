@@ -1,5 +1,16 @@
 package com.zetta.tiksid.ui.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOut
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -7,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -49,12 +61,27 @@ fun AppNavigation(
             if (currentDestination?.route != Screen.MovieDetail.route) innerPadding
             else PaddingValues(0.dp)
 
+        val bottomNavScreenEnterTransition = fadeIn(tween(200, easing = EaseIn))
+        val bottomNavScreenExitTransition = fadeOut(tween(200, easing = EaseIn))
+
         NavHost(
             navController = navController,
             startDestination = startDestination.route,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingModifier)
+                .padding(paddingModifier),
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(350, delayMillis = 50, easing = EaseOut), initialOffsetX = { it })
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(500, easing = EaseOut))
+            },
+            popEnterTransition = {
+                fadeIn(animationSpec = tween(500, easing = EaseOut))
+            },
+            popExitTransition = {
+                slideOutHorizontally(animationSpec = tween(350, delayMillis = 50, easing = EaseOut), targetOffsetX = { it })
+            }
         ) {
             composable(Screen.SignIn.route) {
                 SignIn(
@@ -67,17 +94,29 @@ fun AppNavigation(
                     onNavigateToSignIn = { navController.navigate(Screen.SignIn.route) }
                 )
             }
-            composable(Screen.Home.route) {
+            composable(
+                route = Screen.Home.route,
+                enterTransition = { bottomNavScreenEnterTransition },
+                exitTransition = { bottomNavScreenExitTransition }
+            ) {
                 Home(
                     onNavigateToMovieDetail = { navController.navigate(Screen.MovieDetail.createRoute(it)) }
                 )
             }
-            composable(Screen.Browse.route) {
+            composable(
+                route = Screen.Browse.route,
+                enterTransition = { bottomNavScreenEnterTransition },
+                exitTransition = { bottomNavScreenExitTransition }
+            ) {
                 Browse(
                     onNavigateToMovieDetail = { navController.navigate(Screen.MovieDetail.createRoute(it)) }
                 )
             }
-            composable(Screen.TicketList.route) {
+            composable(
+                route = Screen.TicketList.route,
+                enterTransition = { bottomNavScreenEnterTransition },
+                exitTransition = { bottomNavScreenExitTransition }
+            ) {
                 TicketList(
                     onNavigateToTicketDetail = { navController.navigate(Screen.TicketDetail.createRoute(it)) }
                 )
