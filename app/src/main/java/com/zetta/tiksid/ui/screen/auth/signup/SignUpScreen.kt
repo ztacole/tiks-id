@@ -54,13 +54,12 @@ import com.zetta.tiksid.R
 import com.zetta.tiksid.ui.components.AppButton
 import com.zetta.tiksid.ui.components.AppDialog
 import com.zetta.tiksid.ui.components.AppTextField
-import com.zetta.tiksid.ui.screen.auth.AuthViewModel
 import com.zetta.tiksid.ui.theme.AppTheme
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SignUpScreen(
-    signUpUiState: AuthViewModel.SignUpUiState,
+    signUpUiState: SignUpUiState,
     onNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -311,7 +310,7 @@ fun SignUpScreen(
 private fun SignUpScreenPreview() {
     AppTheme {
         SignUpScreen(
-            signUpUiState = AuthViewModel.SignUpUiState(),
+            signUpUiState = SignUpUiState(),
             onNameChange = {},
             onEmailChange = {},
             onPasswordChange = {},

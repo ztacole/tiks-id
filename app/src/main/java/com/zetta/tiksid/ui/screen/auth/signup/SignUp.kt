@@ -2,14 +2,13 @@ package com.zetta.tiksid.ui.screen.auth.signup
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.zetta.tiksid.ui.screen.auth.AuthViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignUp(
     onNavigateToSignIn: () -> Unit,
 ) {
-    val viewModel: AuthViewModel = koinViewModel()
+    val viewModel: SignUpViewModel = koinViewModel()
 
     SignUpScreen(
         signUpUiState = viewModel.signUpUiState,

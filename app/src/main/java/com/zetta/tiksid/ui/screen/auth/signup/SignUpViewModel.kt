@@ -1,4 +1,4 @@
-package com.zetta.tiksid.ui.screen.auth
+package com.zetta.tiksid.ui.screen.auth.signup
 
 import android.util.Patterns
 import androidx.compose.runtime.getValue
@@ -10,38 +10,13 @@ import com.zetta.tiksid.R
 import com.zetta.tiksid.utils.ResourceProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.compareTo
 
-class AuthViewModel(private val resourceProvider: ResourceProvider): ViewModel() {
-    var signInUiState by mutableStateOf(SignInUiState())
-        private set
-
+class SignUpViewModel(
+    private val resourceProvider: ResourceProvider
+): ViewModel() {
     var signUpUiState by mutableStateOf(SignUpUiState())
         private set
-
-    fun signIn() {
-        viewModelScope.launch {
-            clearValidationSignInState()
-            if (!validateSignInInput()) return@launch
-
-            signInUiState = signInUiState.copy(isAuthenticating = true)
-            delay(2000)
-            signInUiState = signInUiState.copy(isAuthenticating = false, authenticationSucceed = true)
-//            repository.signIn(signInUiState.email, signInUiState.password)
-//                .onSuccess {
-//                    signInUiState = signInUiState.copy(
-//                        authenticationSucceed = true,
-//                        isAuthenticating = false
-//                    )
-//                }
-//                .onFailure {
-//                    signInUiState = signInUiState.copy(
-//                        authenticationErrorMessage = it.message,
-//                        isAuthenticating = false,
-//                        password = ""
-//                    )
-//                }
-        }
-    }
 
     fun signUp() {
         viewModelScope.launch {
@@ -67,16 +42,6 @@ class AuthViewModel(private val resourceProvider: ResourceProvider): ViewModel()
         }
     }
 
-    fun clearValidationSignInState() {
-        signInUiState = signInUiState.copy(
-            emailErrorMessage = null,
-            passwordErrorMessage = null,
-            isEmailError = false,
-            isPasswordError = false,
-            authenticationErrorMessage = null
-        )
-    }
-
     fun clearValidationSignUpState() {
         signUpUiState = signUpUiState.copy(
             nameErrorMessage = null,
@@ -89,35 +54,6 @@ class AuthViewModel(private val resourceProvider: ResourceProvider): ViewModel()
             isConfirmPasswordError = false,
             authenticationErrorMessage = null
         )
-    }
-
-    private fun validateSignInInput(): Boolean {
-        // Email Validation
-        if (signInUiState.email.isEmpty()) {
-            signInUiState =
-                signInUiState.copy(
-                    emailErrorMessage = resourceProvider.getString(R.string.signin_input_required),
-                    isEmailError = true
-                )
-        }
-        if (signInUiState.email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(signInUiState.email).matches()) {
-            signInUiState =
-                signInUiState.copy(
-                    emailErrorMessage = resourceProvider.getString(R.string.signin_input_invalid_email),
-                    isEmailError = true
-                )
-        }
-
-        // Password Validation
-        if (signInUiState.password.isEmpty()) {
-            signInUiState =
-                signInUiState.copy(
-                    passwordErrorMessage = resourceProvider.getString(R.string.signin_input_required),
-                    isPasswordError = true
-                )
-        }
-
-        return !(signInUiState.isEmailError || signInUiState.isPasswordError)
     }
 
     private fun validateSignUpInput(): Boolean {
@@ -187,22 +123,6 @@ class AuthViewModel(private val resourceProvider: ResourceProvider): ViewModel()
         return !(signUpUiState.isNameError || signUpUiState.isEmailError || signUpUiState.isPasswordError || signUpUiState.isConfirmPasswordError)
     }
 
-    fun updateSignInEmail(input: String) {
-        signInUiState = signInUiState.copy(
-            email = input,
-            emailErrorMessage = null,
-            isEmailError = false
-        )
-    }
-
-    fun updateSignInPassword(input: String) {
-        signInUiState = signInUiState.copy(
-            password = input,
-            passwordErrorMessage = null,
-            isPasswordError = false
-        )
-    }
-
     fun updateSignUpName(input: String) {
         signUpUiState = signUpUiState.copy(
             name = input,
@@ -234,34 +154,4 @@ class AuthViewModel(private val resourceProvider: ResourceProvider): ViewModel()
             isConfirmPasswordError = false
         )
     }
-
-    data class SignInUiState(
-        val email: String = "",
-        val emailErrorMessage: String? = null,
-        val isEmailError: Boolean = false,
-        val password: String = "",
-        val passwordErrorMessage: String? = null,
-        val isPasswordError: Boolean = false,
-        val isAuthenticating: Boolean = false,
-        val authenticationSucceed: Boolean = false,
-        val authenticationErrorMessage: String? = null
-    )
-
-    data class SignUpUiState(
-        val name: String = "",
-        val nameErrorMessage: String? = null,
-        val isNameError: Boolean = false,
-        val email: String = "",
-        val emailErrorMessage: String? = null,
-        val isEmailError: Boolean = false,
-        val password: String = "",
-        val passwordErrorMessage: String? = null,
-        val isPasswordError: Boolean = false,
-        val confirmPassword: String = "",
-        val confirmPasswordErrorMessage: String? = null,
-        val isConfirmPasswordError: Boolean = false,
-        val isAuthenticating: Boolean = false,
-        val authenticationSucceed: Boolean = false,
-        val authenticationErrorMessage: String? = null
-    )
 }
