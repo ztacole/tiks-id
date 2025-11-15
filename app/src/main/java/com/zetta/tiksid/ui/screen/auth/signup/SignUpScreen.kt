@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -69,7 +71,6 @@ fun SignUpScreen(
     onNavigateToSignIn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scrollState = rememberScrollState()
     val imeVisible = WindowInsets.isImeVisible
     val focusManager = LocalFocusManager.current
 
@@ -82,200 +83,205 @@ fun SignUpScreen(
         if (signUpUiState.authenticationSucceed) onNavigateToSignIn()
     }
 
-    Column(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
             .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
+        overscrollEffect = null
     ) {
-        Row(
-            modifier = Modifier
-                .padding(top = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier.size(40.dp)
-            )
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        Spacer(Modifier.height(56.dp))
-        Box(
-            modifier = modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
+        item {
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = if (imeVisible) 0.dp else 56.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
+                )
                 Text(
-                    text = stringResource(R.string.signup_text_headline),
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = stringResource(R.string.signup_text_subheadline),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Spacer(Modifier.height(30.dp))
-                AppTextField(
-                    value = signUpUiState.name,
-                    onValueChange = onNameChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.signup_input_name_placeholder),
-                    isError = signUpUiState.isNameError,
-                    errorMessage = signUpUiState.nameErrorMessage,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Words
-                    ),
-                    keyboardActions = KeyboardActions {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.PersonOutline,
-                            contentDescription = null,
-                        )
-                    }
-                )
-                Spacer(Modifier.height(20.dp))
-                AppTextField(
-                    value = signUpUiState.email,
-                    onValueChange = onEmailChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.signup_input_email_placeholder),
-                    isError = signUpUiState.isEmailError,
-                    errorMessage = signUpUiState.emailErrorMessage,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.None
-                    ),
-                    keyboardActions = KeyboardActions {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Email,
-                            contentDescription = null,
-                        )
-                    }
-                )
-                Spacer(Modifier.height(20.dp))
-                AppTextField(
-                    value = signUpUiState.password,
-                    onValueChange = onPasswordChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.signup_input_password_placeholder),
-                    isError = signUpUiState.isPasswordError,
-                    errorMessage = signUpUiState.passwordErrorMessage,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done,
-                        capitalization = KeyboardCapitalization.None
-                    ),
-                    keyboardActions = KeyboardActions {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                    hideValue = !isPasswordVisible,
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { isPasswordVisible = !isPasswordVisible },
-                        ) {
-                            Icon(
-                                imageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Lock,
-                            contentDescription = null,
-                        )
-                    }
-                )
-                Spacer(Modifier.height(20.dp))
-                AppTextField(
-                    value = signUpUiState.confirmPassword,
-                    onValueChange = onConfirmPasswordChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.signup_input_confirm_password_placeholder),
-                    isError = signUpUiState.isConfirmPasswordError,
-                    errorMessage = signUpUiState.confirmPasswordErrorMessage,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions {
-                        focusManager.clearFocus()
-                        onSignUpClick()
-                    },
-                    hideValue = !isPasswordConfirmVisible,
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { isPasswordConfirmVisible = !isPasswordConfirmVisible },
-                        ) {
-                            Icon(
-                                imageVector = if (isPasswordConfirmVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Lock,
-                            contentDescription = null,
-                        )
-                    }
-                )
-                Spacer(Modifier.height(40.dp))
-
-                AppButton(
-                    text = stringResource(R.string.signup_button_sign_up),
-                    onClick = onSignUpClick,
-                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
-        Spacer(Modifier.height(120.dp))
-        Row(
-            modifier = Modifier
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.signup_text_already_have_account),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = stringResource(R.string.signup_text_sign_in),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { onNavigateToSignIn() }
-            )
+        item {
+            Spacer(Modifier.height(56.dp))
+            Box(
+                modifier = modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(top = if (imeVisible) 0.dp else 56.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.signup_text_headline),
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.signup_text_subheadline),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(Modifier.height(30.dp))
+                    AppTextField(
+                        value = signUpUiState.name,
+                        onValueChange = onNameChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = stringResource(R.string.signup_input_name_placeholder),
+                        isError = signUpUiState.isNameError,
+                        errorMessage = signUpUiState.nameErrorMessage,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Words
+                        ),
+                        keyboardActions = KeyboardActions {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.PersonOutline,
+                                contentDescription = null,
+                            )
+                        }
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    AppTextField(
+                        value = signUpUiState.email,
+                        onValueChange = onEmailChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = stringResource(R.string.signup_input_email_placeholder),
+                        isError = signUpUiState.isEmailError,
+                        errorMessage = signUpUiState.emailErrorMessage,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.None
+                        ),
+                        keyboardActions = KeyboardActions {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Email,
+                                contentDescription = null,
+                            )
+                        }
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    AppTextField(
+                        value = signUpUiState.password,
+                        onValueChange = onPasswordChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = stringResource(R.string.signup_input_password_placeholder),
+                        isError = signUpUiState.isPasswordError,
+                        errorMessage = signUpUiState.passwordErrorMessage,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                            capitalization = KeyboardCapitalization.None
+                        ),
+                        keyboardActions = KeyboardActions {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                        hideValue = !isPasswordVisible,
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { isPasswordVisible = !isPasswordVisible },
+                            ) {
+                                Icon(
+                                    imageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Lock,
+                                contentDescription = null,
+                            )
+                        }
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    AppTextField(
+                        value = signUpUiState.confirmPassword,
+                        onValueChange = onConfirmPasswordChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = stringResource(R.string.signup_input_confirm_password_placeholder),
+                        isError = signUpUiState.isConfirmPasswordError,
+                        errorMessage = signUpUiState.confirmPasswordErrorMessage,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions {
+                            focusManager.clearFocus()
+                            onSignUpClick()
+                        },
+                        hideValue = !isPasswordConfirmVisible,
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { isPasswordConfirmVisible = !isPasswordConfirmVisible },
+                            ) {
+                                Icon(
+                                    imageVector = if (isPasswordConfirmVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Lock,
+                                contentDescription = null,
+                            )
+                        }
+                    )
+                    Spacer(Modifier.height(40.dp))
+
+                    AppButton(
+                        text = stringResource(R.string.signup_button_sign_up),
+                        onClick = onSignUpClick,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+            Spacer(Modifier.height(120.dp))
+        }
+        item {
+            Row(
+                modifier = Modifier.navigationBarsPadding(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.signup_text_already_have_account),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = stringResource(R.string.signup_text_sign_in),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { onNavigateToSignIn() }
+                )
+            }
         }
     }
 

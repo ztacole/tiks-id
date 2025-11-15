@@ -4,10 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Movie(
+data class MovieDetail(
     val id: Int,
     val title: String,
+    val description: String,
     val duration: Int,
+    @SerialName("release_date") val releaseDate: String,
     val poster: String,
-    val genre: String,
+    val genres: List<String>
 )
