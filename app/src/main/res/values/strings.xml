@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">Tiks ID</string>
+    <string name="text_ok">OK</string>
+    <plurals name="text_movie_information">
+        <item quantity="one">%1$s \u2022 %2$d minute</item>
+        <item quantity="other">%1$s \u2022 %2$d minutes</item>
+    </plurals>
+
+    <!--  Sign In  -->
+    <string name="signin_text_headline">The Big Screen Is Calling!</string>
+    <string name="signin_text_subheadline">Ready for the next show? Sign in to book your seat and discover new movies waiting for you.</string>
+    <string name="signin_text_dont_have_account">Don\'t have an account?"</string>
+    <string name="signin_text_sign_up">Sign Up</string>
+    <string name="signin_input_email_placeholder">youremail@example.com</string>
+    <string name="signin_input_invalid_email">Invalid email format</string>
+    <string name="signin_input_password_placeholder">Enter your password here…</string>
+    <string name="signin_input_required">This field cannot be empty</string>
+    <string name="signin_button_sign_in">Sign In</string>
+    <string name="signin_dialog_title_failed">Sign In Failed</string>
+
+    <!--  Sign Up  -->
+    <string name="signup_text_headline">Join the Experience!</string>
+    <string name="signup_text_subheadline">Create your account to reserve seats easily, explore upcoming movies, and enjoy a personalized cinema experience.</string>
+    <string name="signup_text_already_have_account">Already have an account?"</string>
+    <string name="signup_text_sign_in">Sign In</string>
+    <string name="signup_input_name_placeholder">Enter your name here…"</string>
+    <string name="signup_input_invalid_name_length">Name must be between 3 and 50 characters</string>
+    <string name="signup_input_email_placeholder">youremail@example.com</string>
+    <string name="signup_input_invalid_email">Invalid email format</string>
+    <string name="signup_input_password_placeholder">Enter your password here…</string>
+    <string name="signup_input_invalid_password_length">Password must be at least 8 characters</string>
+    <string name="signup_input_confirm_password_placeholder">Confirm your password here…</string>
+    <string name="signup_input_password_mismatch">Passwords do not match</string>"
+    <string name="signup_input_required">This field cannot be empty</string>
+    <string name="signup_button_sign_up">Sign Up"</string>
+    <string name="signup_dialog_title_failed">Sign Up Failed</string>
+
+    <!--  Home  -->
+    <string name="home_text_popular_movie">Popular This Week</string>
+    <string name="home_text_new_titles">New Titles</string>
+
+    <!--  Browse Movies  -->
+    <string name="browse_text_all_movies">All Movies</string>
+    
+    <!--  Movie Detail  -->
+    <string name="detail_text_theater">Theater</string>
+    <string name="detail_text_available_time">Available Time</string>
+    <string name="detail_text_choose_seat">Choose Seat</string>
+    <plurals name="detail_button_buy_ticket">
+        <item quantity="one">Buy Ticket</item>
+        <item quantity="other">Buy Tickets</item>
+    </plurals>
+    <string name="detail_text_stay_tuned">Stay tuned for the movie schedule updates</string>
+    
+    <!--  Ticket List  -->
+    <string name="ticket_list_text_your_ticket">Your Tickets</string>
+    <plurals name="ticket_list_text_ticket_information">
+        <item quantity="one">%1$d ticket \u2022 %2$s</item>
+        <item quantity="other">%1$d tickets \u2022 %2$s</item>
+    </plurals>
+    <string name="ticket_list_text_seat">Seat:</string>"
+
+    <!--  Ticket Detail  -->
+    <string name="ticket_detail_text_ticket">Ticket</string>
+    <string name="ticket_detail_text_scan_barcode">Scan this barcode at the theater entrance</string>
+</resources>
