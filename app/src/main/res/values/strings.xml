@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Tiks ID</string>
     <string name="text_ok">OK</string>
-    <plurals name="text_movie_information">
+    <plurals name="text_movie_overview">
         <item quantity="one">%1$s \u2022 %2$d minute</item>
         <item quantity="other">%1$s \u2022 %2$d minutes</item>
     </plurals>
@@ -36,7 +36,7 @@
     <string name="signup_dialog_title_failed">Sign Up Failed</string>
 
     <!--  Home  -->
-    <string name="home_text_popular_movie">Popular This Week</string>
+    <string name="home_text_featured_movie">Featured Movie</string>
     <string name="home_text_new_titles">New Titles</string>
 
     <!--  Browse Movies  -->
