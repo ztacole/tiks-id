@@ -33,6 +33,7 @@ import androidx.navigation.NavDestination
 import com.zetta.tiksid.R
 import com.zetta.tiksid.navigation.Screen
 import com.zetta.tiksid.ui.theme.AppTheme
+import com.zetta.tiksid.utils.Constants
 
 sealed class BottomNavItem(
     val label: String,
@@ -72,14 +73,14 @@ fun BottomNavBar(
     )
 
     Surface(
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
         tonalElevation = NavigationBarDefaults.Elevation
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(NavigationBarDefaults.windowInsets)
-                .defaultMinSize(minHeight = 64.dp)
+                .defaultMinSize(minHeight = Constants.NAVIGATION_BAR_HEIGHT)
                 .selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -91,10 +92,10 @@ fun BottomNavBar(
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .defaultMinSize(minHeight = 64.dp)
+                        .defaultMinSize(minHeight = Constants.NAVIGATION_BAR_HEIGHT)
                         .clickable(
                             interactionSource = interactionSource,
-                            indication = ripple(radius = 64.dp)
+                            indication = ripple(radius = Constants.NAVIGATION_BAR_HEIGHT)
                         ) { onNavigate(item.route) },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)

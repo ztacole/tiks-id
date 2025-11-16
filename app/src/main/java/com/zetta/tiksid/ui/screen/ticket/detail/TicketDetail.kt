@@ -5,8 +5,11 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TicketDetail(
-    ticketId: String,
-    onNavigateBack: () -> Unit
+    viewModel: TicketDetailViewModel,
+    modifier: Modifier = Modifier
 ) {
-
+    TicketDetailScreen(
+        uiState = viewModel.uiState,
+        modifier = modifier
+    )
 }

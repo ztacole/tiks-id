@@ -5,8 +5,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun MovieDetail(
-    movieId: String,
-    onNavigateBack: () -> Unit,
+    viewModel: MovieDetailViewModel,
     onNavigateToTicketList: () -> Unit,
 ) {
 }

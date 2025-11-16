@@ -26,11 +26,12 @@ import com.zetta.tiksid.data.model.Movie
 import com.zetta.tiksid.ui.components.screen.MovieCard
 import com.zetta.tiksid.ui.components.screen.ShimmerMovieCard
 import com.zetta.tiksid.ui.theme.AppTheme
+import com.zetta.tiksid.utils.Constants
 
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
-    onNavigateToMovieDetail: (String) -> Unit,
+    onNavigateToMovieDetail: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -52,6 +53,7 @@ fun HomeScreen(
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
+            Spacer(Modifier.height(8.dp))
         }
         item {
             if (uiState.isLoading) {
@@ -82,7 +84,7 @@ fun HomeScreen(
             Spacer(Modifier.height(4.dp))
             LazyRow(
                 overscrollEffect = null,
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp + Constants.NAVIGATION_BAR_HEIGHT)
             ) {
                 if (uiState.isLoading) {
                     items(3) {

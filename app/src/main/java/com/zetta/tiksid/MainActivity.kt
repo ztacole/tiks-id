@@ -13,9 +13,9 @@ import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.zetta.tiksid.network.SessionManager
 import com.zetta.tiksid.navigation.AppNavigation
 import com.zetta.tiksid.navigation.Screen
+import com.zetta.tiksid.network.SessionManager
 import com.zetta.tiksid.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 val session = sessionManager.getSession()
-                startDestination = session?.let { Screen.Home } ?: Screen.SignIn
+                startDestination = session?.let { Screen.Home } ?: Screen.Home
 
                 delay(100)
                 keepSplash = false

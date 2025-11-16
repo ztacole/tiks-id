@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -124,19 +125,21 @@ var lastClickTime by remember { mutableLongStateOf(0) }
 @Composable
 private fun LightPreview() {
     AppTheme {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            BackButton({})
-            AppButton(
-                text = "Button",
-                onClick = { },
-                modifier = Modifier.padding(8.dp),
-                outlineMode = true
-            )
-            AppButton(
-                text = "Button",
-                onClick = { },
-                modifier = Modifier.padding(8.dp)
-            )
+        Surface {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                BackButton({})
+                AppButton(
+                    text = "Button",
+                    onClick = { },
+                    modifier = Modifier.padding(8.dp),
+                    outlineMode = true
+                )
+                AppButton(
+                    text = "Button",
+                    onClick = { },
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 }

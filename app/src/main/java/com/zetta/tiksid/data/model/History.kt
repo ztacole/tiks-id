@@ -4,8 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ScheduleTime(
+data class History(
     val id: Int,
-    val time: String,
-    @SerialName("booked_seats") val bookedSeats: List<String>
+    val movie: Movie,
+    val schedule: String,
+    val seats: List<String>,
+    @SerialName("total_price") val totalPrice: Int
 )
