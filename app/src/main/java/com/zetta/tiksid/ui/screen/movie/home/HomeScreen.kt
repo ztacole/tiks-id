@@ -58,14 +58,13 @@ fun HomeScreen(
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Spacer(Modifier.height(8.dp))
         }
         item {
             if (uiState.isLoading) {
                 ShimmerMovieCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 8.dp)
                 )
             } else {
                 MovieCard(
@@ -73,12 +72,12 @@ fun HomeScreen(
                     onClick = onNavigateToMovieDetail,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 8.dp),
                     titleStyle = MaterialTheme.typography.titleLarge,
                     overviewStyle = MaterialTheme.typography.bodyLarge
                 )
             }
-            Spacer(Modifier.height(36.dp))
+            Spacer(Modifier.height(28.dp))
         }
         item {
             Text(
@@ -86,11 +85,10 @@ fun HomeScreen(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(4.dp))
             LazyRow(
                 overscrollEffect = null,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
+                contentPadding = PaddingValues(horizontal = 8.dp)
             ) {
                 if (uiState.isLoading) {
                     items(3) {

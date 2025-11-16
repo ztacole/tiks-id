@@ -1,7 +1,6 @@
 package com.zetta.tiksid.ui.components.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -41,9 +40,7 @@ fun MovieCard(
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     titleStyle: TextStyle = MaterialTheme.typography.titleMedium,
-    overviewStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Any? = LocalIndication
+    overviewStyle: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
     Column(
         modifier = modifier
@@ -51,11 +48,9 @@ fun MovieCard(
             .clip(MaterialTheme.shapes.medium)
             .clickable(
                 enabled = true,
-                onClickLabel = "Open movie detail",
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
+                onClickLabel = "Open movie detail"
             ) { onClick(movie.id.toString()) }
-            .padding(2.dp)
+            .padding(8.dp)
     ) {
         SubcomposeAsyncImage(
             model = R.drawable.dummy_poster,
@@ -83,11 +78,7 @@ fun MovieCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(2 / 3f)
-                .clip(MaterialTheme.shapes.medium)
-                .clickable(
-                    enabled = true,
-                    onClickLabel = "Open movie detail",
-                ) { onClick(movie.id.toString()) },
+                .clip(MaterialTheme.shapes.medium),
             contentScale = ContentScale.Crop
         )
         Spacer(Modifier.height(16.dp))
@@ -111,7 +102,7 @@ fun ShimmerMovieCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier.padding(8.dp)
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -150,7 +141,7 @@ private fun MovieCardPreview() {
                     genre = "Action"
                 ),
                 onClick = {},
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             )
         }
     }
