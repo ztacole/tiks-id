@@ -93,7 +93,7 @@ fun SignUpScreen(
         item {
             Row(
                 modifier = Modifier
-                    .padding(top = 16.dp),
+                    .padding(top = 24.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -119,7 +119,7 @@ fun SignUpScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 24.dp)
                         .padding(top = if (imeVisible) 0.dp else 56.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

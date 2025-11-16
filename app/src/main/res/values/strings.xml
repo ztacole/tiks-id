@@ -52,7 +52,7 @@
     </plurals>
     <string name="detail_text_stay_tuned">Stay tuned for the movie schedule updates</string>
     
-    <!--  Ticket List  -->
+    <!--  History List  -->
     <string name="ticket_list_text_your_ticket">Your Tickets</string>
     <plurals name="ticket_list_text_ticket_information">
         <item quantity="one">%1$d ticket \u2022 %2$s</item>
@@ -60,7 +60,7 @@
     </plurals>
     <string name="ticket_list_text_seat">Seat:</string>"
 
-    <!--  Ticket Detail  -->
+    <!--  History Detail  -->
     <string name="ticket_detail_text_ticket">Ticket</string>
     <string name="ticket_detail_text_scan_barcode">Scan this barcode at the theater entrance</string>
 </resources>

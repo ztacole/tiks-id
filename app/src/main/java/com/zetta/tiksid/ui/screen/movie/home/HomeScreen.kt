@@ -1,21 +1,15 @@
 package com.zetta.tiksid.ui.screen.movie.home
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -52,11 +46,11 @@ fun HomeScreen(
         overscrollEffect = null
     ) {
         item {
-            Spacer(Modifier.padding(top = 16.dp))
+            Spacer(Modifier.padding(top = 24.dp))
             Text(
                 text = stringResource(R.string.home_text_featured_movie),
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
         }
         item {
@@ -64,7 +58,7 @@ fun HomeScreen(
                 ShimmerMovieCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = 16.dp)
                 )
             } else {
                 MovieCard(
@@ -72,7 +66,7 @@ fun HomeScreen(
                     onClick = onNavigateToMovieDetail,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
+                        .padding(horizontal = 16.dp),
                     titleStyle = MaterialTheme.typography.titleLarge,
                     overviewStyle = MaterialTheme.typography.bodyLarge
                 )
@@ -83,12 +77,12 @@ fun HomeScreen(
             Text(
                 text = stringResource(R.string.home_text_new_titles),
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
             Spacer(Modifier.height(4.dp))
             LazyRow(
                 overscrollEffect = null,
-                contentPadding = PaddingValues(horizontal = 8.dp)
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp)
             ) {
                 if (uiState.isLoading) {
                     items(3) {
@@ -106,7 +100,6 @@ fun HomeScreen(
                     }
                 }
             }
-            Spacer(Modifier.navigationBarsPadding())
         }
     }
 }
