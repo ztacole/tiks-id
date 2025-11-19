@@ -60,7 +60,7 @@ fun AppTextField(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = if (!singleLine) 2 else 1,
     interactionSource: MutableInteractionSource? = null,
-    shape: Shape = MaterialTheme.shapes.large,
+    shape: Shape = MaterialTheme.shapes.small,
     errorMessage: String? = null,
     outlineMode: Boolean = false
 ) {

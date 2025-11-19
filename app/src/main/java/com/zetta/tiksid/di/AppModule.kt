@@ -6,7 +6,7 @@ import com.zetta.tiksid.network.SessionManager
 import com.zetta.tiksid.ui.screen.auth.signin.SignInViewModel
 import com.zetta.tiksid.ui.screen.auth.signup.SignUpViewModel
 import com.zetta.tiksid.ui.screen.movie.browse.BrowseViewModel
-import com.zetta.tiksid.ui.screen.movie.detail.MovieDetailViewModel
+import com.zetta.tiksid.ui.screen.movie.detail.BookingViewModel
 import com.zetta.tiksid.ui.screen.movie.home.HomeViewModel
 import com.zetta.tiksid.ui.screen.ticket.detail.TicketDetailViewModel
 import com.zetta.tiksid.ui.screen.ticket.list.TicketListViewModel
@@ -24,7 +24,9 @@ val appModule = module {
     viewModel { SignUpViewModel(get()) }
     viewModel { HomeViewModel() }
     viewModel { BrowseViewModel() }
-    viewModel { MovieDetailViewModel() }
+    viewModel {(handle: SavedStateHandle) ->
+        BookingViewModel(handle)
+    }
     viewModel { TicketListViewModel() }
     viewModel { (handle: SavedStateHandle) ->
         TicketDetailViewModel(handle)

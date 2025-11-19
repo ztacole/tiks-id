@@ -78,7 +78,7 @@ private fun Prev() {
                             duration = 128,
                             poster = ""
                         ),
-                        theater = "Diana Theater",
+                        theater = "Diana TheaterSchedule",
                         schedule = "28 Oct 2024 08:00",
                         seats = List(5) { "A${it + 1}" }
                     )

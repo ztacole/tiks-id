@@ -228,7 +228,7 @@ fun SignInScreen(
     AppDialog(
         show = signInUiState.isAuthenticating,
         onDismiss = { },
-        content = { CircularProgressIndicator(modifier = Modifier.padding(vertical = 16.dp)) }
+        content = { CircularProgressIndicator(modifier = Modifier.padding(top = 32.dp)) }
     )
 
     // Auth Failed Dialog

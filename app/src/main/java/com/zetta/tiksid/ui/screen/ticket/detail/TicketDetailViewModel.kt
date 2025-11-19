@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TicketDetailViewModel(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
     private val ticketId: Int = savedStateHandle["ticketId"] ?: 0
 
@@ -26,7 +26,7 @@ class TicketDetailViewModel(
             duration = 128,
             poster = ""
         ),
-        theater = "Diana Theater",
+        theater = "Diana TheaterSchedule",
         schedule = "28 Oct 2024 08:00",
         seats = List(5) { "A${it + 1}" }
     )

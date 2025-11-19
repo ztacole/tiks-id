@@ -45,6 +45,8 @@ fun AppButton(
     enabled: Boolean = true,
     shape: Shape = MaterialTheme.shapes.large,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
     interactionSource: MutableInteractionSource? = null,
     outlineMode: Boolean = false
 ) {
@@ -55,8 +57,8 @@ fun AppButton(
             enabled = enabled,
             shape = shape,
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = containerColor,
+                contentColor = contentColor,
                 disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),

@@ -24,7 +24,7 @@ fun AppDialog(
     show: Boolean,
     onDismiss: () -> Unit,
     dismissOnBackPress: Boolean = true,
-    dismissOnClickOutside: Boolean = true,
+    dismissOnOutsideClick: Boolean = true,
     title: String? = null,
     confirmButton: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit,
@@ -35,13 +35,13 @@ fun AppDialog(
             properties = DialogProperties(
                 windowTitle = title ?: "",
                 dismissOnBackPress = dismissOnBackPress,
-                dismissOnClickOutside = dismissOnClickOutside
+                dismissOnClickOutside = dismissOnOutsideClick
             )
         ) {
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.Companion.padding(16.dp)
+                modifier = Modifier.padding(16.dp)
             ) {
                 Column(
                     modifier = Modifier

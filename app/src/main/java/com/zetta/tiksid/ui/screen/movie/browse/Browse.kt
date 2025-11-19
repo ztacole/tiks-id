@@ -6,13 +6,13 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Browse(
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToBooking: (Int) -> Unit,
 ) {
     val viewModel: BrowseViewModel = koinViewModel()
 
     BrowseScreen(
         uiState = viewModel.uiState,
-        onNavigateToMovieDetail = onNavigateToMovieDetail,
+        onNavigateToMovieDetail = onNavigateToBooking,
         modifier = Modifier
     )
 }

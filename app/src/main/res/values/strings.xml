@@ -2,6 +2,8 @@
     <!--  Common  -->
     <string name="app_name">Tiks ID</string>
     <string name="text_ok">OK</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_confirm">Confirm</string>
     <plurals name="text_movie_overview">
         <item quantity="one">%1$s \u2022 %2$d minute</item>
         <item quantity="other">%1$s \u2022 %2$d minutes</item>
@@ -45,6 +47,7 @@
     
     <!--  Movie Detail  -->
     <string name="detail_text_theater">Theater</string>
+    <string name="detail_text_date">Date</string>
     <string name="detail_text_available_time">Available Time</string>
     <string name="detail_text_choose_seat">Choose Seat</string>
     <plurals name="detail_button_buy_ticket">
@@ -52,6 +55,12 @@
         <item quantity="other">Buy Tickets</item>
     </plurals>
     <string name="detail_text_stay_tuned">Stay tuned for the movie schedule updates</string>
+    <string name="detail_dialog_failed_to_payment">Failed to Payment</string>
+    <string name="detail_dialog_confirm_payment">Confirm Payment</string>
+    <plurals name="detail_dialog_confirm_payment">
+        <item quantity="one">You have selected %1$s seat. Please confirm your payment.</item>
+        <item quantity="other">You have selected %1$s seats. Please confirm your payment.</item>
+    </plurals>
     
     <!--  History List  -->
     <string name="ticket_list_text_your_ticket">Your Tickets</string>

@@ -164,7 +164,7 @@ private fun Prev() {
                         title = "Deadpool & Wolverine",
                         genre = "Action",
                         duration = 128,
-                        theater = "Diana Theater",
+                        theater = "Diana TheaterSchedule",
                         schedule = "28 Oct 2024 08:00",
                         seat = "A${it + 1}"
                     )

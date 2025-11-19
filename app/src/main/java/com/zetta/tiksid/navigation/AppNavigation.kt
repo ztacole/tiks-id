@@ -36,8 +36,8 @@ import com.zetta.tiksid.ui.components.BottomNavBar
 import com.zetta.tiksid.ui.screen.auth.signin.SignIn
 import com.zetta.tiksid.ui.screen.auth.signup.SignUp
 import com.zetta.tiksid.ui.screen.movie.browse.Browse
-import com.zetta.tiksid.ui.screen.movie.detail.MovieDetail
-import com.zetta.tiksid.ui.screen.movie.detail.MovieDetailViewModel
+import com.zetta.tiksid.ui.screen.movie.detail.Booking
+import com.zetta.tiksid.ui.screen.movie.detail.BookingViewModel
 import com.zetta.tiksid.ui.screen.movie.home.Home
 import com.zetta.tiksid.ui.screen.ticket.detail.TicketDetail
 import com.zetta.tiksid.ui.screen.ticket.detail.TicketDetailViewModel
@@ -61,7 +61,7 @@ fun AppNavigation(
     val showBottomNav = currentDestination?.route in bottomNavScreens
 
     val topAppBarScreens = listOf(
-        Screen.MovieDetail.route,
+        Screen.Booking.route,
         Screen.TicketDetail.route
     )
     val showTopAppBar = currentDestination?.route in topAppBarScreens
@@ -117,7 +117,7 @@ fun AppNavigation(
         }
     ) { innerPadding ->
         val paddingModifier =
-            if (currentDestination?.route != Screen.MovieDetail.route) innerPadding.calculateTopPadding()
+            if (currentDestination?.route != Screen.Booking.route) innerPadding.calculateTopPadding()
             else PaddingValues(0.dp).calculateTopPadding()
 
         val bottomNavScreenEnterTransition = fadeIn(tween(200, easing = EaseIn))
@@ -159,7 +159,7 @@ fun AppNavigation(
                 exitTransition = { bottomNavScreenExitTransition }
             ) {
                 Home(
-                    onNavigateToMovieDetail = { navController.navigate(Screen.MovieDetail.createRoute(it)) }
+                    onNavigateToMovieDetail = { navController.navigate(Screen.Booking.createRoute(it)) }
                 )
             }
             composable(
@@ -168,7 +168,7 @@ fun AppNavigation(
                 exitTransition = { bottomNavScreenExitTransition }
             ) {
                 Browse(
-                    onNavigateToMovieDetail = { navController.navigate(Screen.MovieDetail.createRoute(it)) }
+                    onNavigateToBooking = { navController.navigate(Screen.Booking.createRoute(it)) }
                 )
             }
             composable(
@@ -181,15 +181,22 @@ fun AppNavigation(
                 )
             }
             composable(
-                route = Screen.MovieDetail.route,
+                route = Screen.Booking.route,
                 arguments = listOf(
                     navArgument("movieId", { type = NavType.IntType })
                 )
             ) {
-                val viewModel: MovieDetailViewModel = koinViewModel()
-                MovieDetail(
+                val viewModel: BookingViewModel = koinViewModel()
+                Booking(
                     viewModel = viewModel,
-                    onNavigateToTicketList = { navController.navigate(Screen.TicketList.route) }
+                    onNavigateToTicketList = {
+                        navController.navigate(Screen.TicketList.route) {
+                            popUpTo(Screen.Home.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                 )
             }
             composable(
