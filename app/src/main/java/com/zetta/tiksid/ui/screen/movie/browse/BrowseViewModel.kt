@@ -15,7 +15,10 @@ class BrowseViewModel(
     var uiState by mutableStateOf(BrowseUiState())
         private set
 
-    private val movies = List(20) {
+    private var currentPage = 1
+    private val pageSize = 20
+
+    private val allMovies = List(100) {
         Movie(
             id = it + 1,
             title = "Movie ${it + 1}",
@@ -30,14 +33,41 @@ class BrowseViewModel(
     }
 
     fun loadMovies() {
+        if (uiState.isLoadingMore || uiState.endReached) return
+        uiState = uiState.copy(isLoadingMore = true)
+
         viewModelScope.launch {
-            uiState = uiState.copy(isLoading = true)
-            delay(2000)
+            if (currentPage == 1) {
+                uiState = uiState.copy(isLoading = true)
+            }
+
+            delay(2000) // simulasi API
+
+            val start = (currentPage - 1) * pageSize
+            val end = minOf(start + pageSize, allMovies.size)
+
+            val newData = allMovies.slice(start until end)
+
+            uiState = uiState.copy(endReached = newData.isEmpty())
 
             uiState = uiState.copy(
-                movies = movies,
-                isLoading = false
+                movies = uiState.movies + newData,
+                isLoading = false,
+                isRefreshing = false,
+                isLoadingMore = false
             )
+
+            if (!uiState.endReached) currentPage++
         }
+    }
+
+    fun refreshMovies() {
+        currentPage = 1
+        uiState = uiState.copy(
+            movies = emptyList(),
+            isRefreshing = true,
+            endReached = false
+        )
+        loadMovies()
     }
 }

@@ -250,7 +250,8 @@ fun BookingScreen(
                     Spacer(Modifier.height(8.dp))
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = PaddingValues(horizontal = 24.dp)
+                        contentPadding = PaddingValues(horizontal = 24.dp),
+                        overscrollEffect = null
                     ) {
                         items(uiState.seats.keys.toList(), key = { it }) { sectionId ->
 

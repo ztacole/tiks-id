@@ -12,6 +12,8 @@ fun Browse(
 
     BrowseScreen(
         uiState = viewModel.uiState,
+        onFetchMore = viewModel::loadMovies,
+        onRefresh = viewModel::refreshMovies,
         onNavigateToMovieDetail = onNavigateToBooking,
         modifier = Modifier
     )
