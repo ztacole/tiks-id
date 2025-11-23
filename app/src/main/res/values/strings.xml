@@ -62,15 +62,16 @@
         <item quantity="other">You have selected %1$s seats. Please confirm your payment.</item>
     </plurals>
     
-    <!--  History List  -->
+    <!--  Ticket List  -->
     <string name="ticket_list_text_your_ticket">Your Tickets</string>
+    <string name="ticket_list_text_no_ticket">Your ticket still is empty. Reserve your seat and enjoy the movie experience!</string>
     <plurals name="ticket_list_text_ticket_information">
         <item quantity="one">%1$d ticket \u2022 %2$s</item>
         <item quantity="other">%1$d tickets \u2022 %2$s</item>
     </plurals>
     <string name="ticket_list_text_seat">Seat:</string>"
 
-    <!--  History Detail  -->
+    <!--  Ticket Detail  -->
     <string name="ticket_detail_text_topbar">Ticket</string>
     <string name="ticket_detail_text_scan_barcode">Scan this barcode at the theater entrance</string>
 </resources>

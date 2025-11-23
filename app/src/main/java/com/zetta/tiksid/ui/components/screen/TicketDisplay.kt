@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zetta.tiksid.R
 import com.zetta.tiksid.ui.theme.AppTheme
+import com.zetta.tiksid.utils.formatDateToDateTimeMinute
 
 @Composable
 fun TicketDisplay(
@@ -132,7 +133,7 @@ fun TicketDisplay(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = schedule,
+            text = formatDateToDateTimeMinute(schedule),
             style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
             modifier = Modifier
                 .padding(horizontal = 24.dp)

@@ -1,9 +1,9 @@
 package com.zetta.tiksid.ui.screen.ticket.detail
 
-import com.zetta.tiksid.data.model.TicketDetail
+import com.zetta.tiksid.data.model.Ticket
 
 data class TicketDetailUiState(
     val isLoading: Boolean = false,
-    val ticket: TicketDetail? = null,
+    val ticket: Ticket? = null,
     val errorMessages: String? = null
 )

@@ -4,8 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import com.zetta.tiksid.MainViewModel
 import com.zetta.tiksid.data.remote.AuthService
 import com.zetta.tiksid.data.remote.MovieService
+import com.zetta.tiksid.data.remote.TicketService
 import com.zetta.tiksid.data.repository.AuthRepository
 import com.zetta.tiksid.data.repository.MovieRepository
+import com.zetta.tiksid.data.repository.TicketRepository
 import com.zetta.tiksid.network.ApiClient
 import com.zetta.tiksid.network.SessionManager
 import com.zetta.tiksid.ui.screen.auth.signin.SignInViewModel
@@ -27,9 +29,11 @@ val appModule = module {
 
     single { AuthService(get<ApiClient>().client) }
     single { MovieService(get<ApiClient>().client) }
+    single { TicketService(get<ApiClient>().client) }
 
     single { AuthRepository(get(), get()) }
     single { MovieRepository(get()) }
+    single { TicketRepository(get()) }
 
     viewModel { MainViewModel(get()) }
     viewModel { SignInViewModel(get(), get()) }
@@ -37,10 +41,10 @@ val appModule = module {
     viewModel { HomeViewModel(get()) }
     viewModel { BrowseViewModel(get()) }
     viewModel {(handle: SavedStateHandle) ->
-        BookingViewModel(handle, get())
+        BookingViewModel(handle, get(), get())
     }
-    viewModel { TicketListViewModel() }
+    viewModel { TicketListViewModel(get()) }
     viewModel { (handle: SavedStateHandle) ->
-        TicketDetailViewModel(handle)
+        TicketDetailViewModel(handle, get())
     }
 }

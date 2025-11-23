@@ -37,16 +37,6 @@ data class MovieDetail(
     val genres: List<String>,
 )
 
-data class PaymentData(
-    val scheduleId: Int,
-    val movieTitle: String,
-    val theaterName: String,
-    val date: String,
-    val time: String,
-    val selectedSeats: List<String>,
-    val totalPrice: Int
-)
-
 data class Theater(
     val id: Int,
     val name: String,

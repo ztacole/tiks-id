@@ -163,7 +163,7 @@ private fun BrowseScreenPrev() {
                             title = "Title ${it + 1}",
                             duration = 128,
                             poster = "",
-                            genre = listOf("Action")
+                            genres = listOf("Action")
                         )
                     }
                 ),

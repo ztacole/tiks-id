@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,19 +27,17 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.zetta.tiksid.R
-import com.zetta.tiksid.data.model.History
-import com.zetta.tiksid.data.model.Movie
-import com.zetta.tiksid.ui.theme.AppTheme
+import com.zetta.tiksid.data.model.Ticket
+import com.zetta.tiksid.utils.formatDateToDateTimeMinute
 import com.zetta.tiksid.utils.formatRupiah
 import com.zetta.tiksid.utils.shimmerLoading
 
 @Composable
 fun HistoryCard(
-    history: History,
+    ticket: Ticket,
     onCLick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -51,12 +48,12 @@ fun HistoryCard(
             .clickable(
                 enabled = true,
                 onClickLabel = "Open movie detail"
-            ) { onCLick(history.id) }
+            ) { onCLick(ticket.id) }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         SubcomposeAsyncImage(
-            model = R.drawable.dummy_poster,
+            model = ticket.moviePoster,
             contentDescription = null,
             loading = {
                 Box(
@@ -93,20 +90,25 @@ fun HistoryCard(
         ) {
             Column {
                 Text(
-                    text = history.movie.title,
+                    text = ticket.movieTitle,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = pluralStringResource(R.plurals.ticket_list_text_ticket_information, history.seats.size, history.seats.size, history.schedule),
+                    text = pluralStringResource(
+                        R.plurals.ticket_list_text_ticket_information,
+                        ticket.seats.size,
+                        ticket.seats.size,
+                        formatDateToDateTimeMinute(ticket.scheduleDate)
+                    ),
                     style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
             Column {
-                val seatText = history.seats.joinToString(" & ")
+                val seatText = ticket.seats.joinToString(" & ")
                 Text(
                     text = stringResource(R.string.ticket_list_text_seat),
                     style = MaterialTheme.typography.bodyMedium,
@@ -119,7 +121,7 @@ fun HistoryCard(
                 )
             }
             Text(
-                text = formatRupiah(history.totalPrice),
+                text = formatRupiah(ticket.totalPrice),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -194,41 +196,6 @@ fun ShimmerHistoryCard(
                     .clip(CircleShape)
                     .shimmerLoading()
             )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun Prev() {
-    AppTheme {
-        Surface {
-            HistoryCard(
-                history = History(
-                    id = 1,
-                    movie = Movie(
-                        id = 1,
-                        title = "Deadpool & Wolverine",
-                        poster = "",
-                        genre = listOf("Action"),
-                        duration = 128
-                    ),
-                    schedule = "28 Oct 2024 08:00",
-                    seats = List(5) { "A${it + 1}" },
-                    totalPrice = 200000
-                ),
-                {}
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun ShimmerPrev() {
-    AppTheme {
-        Surface {
-            ShimmerHistoryCard()
         }
     }
 }

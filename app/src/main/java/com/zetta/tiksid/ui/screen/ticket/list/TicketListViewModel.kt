@@ -6,31 +6,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zetta.tiksid.data.model.Movie
-import com.zetta.tiksid.data.model.History
+import com.zetta.tiksid.data.model.Ticket
+import com.zetta.tiksid.data.repository.TicketRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TicketListViewModel(
-
+    private val repository: TicketRepository
 ): ViewModel() {
     var uiState by mutableStateOf(TicketListUiState())
         private set
-
-    val histories = List(12) {
-        History(
-            id = it,
-            movie = Movie(
-                id = it + 1,
-                title = "Movie ${it + 1}",
-                poster = "",
-                genre = listOf("Action"),
-                duration = 128
-            ),
-            schedule = "28 Oct 2024 08:00",
-            seats = List(5) { "A${it + 1}" },
-            totalPrice = 200000
-        )
-    }
 
     init {
         loadTickets()
@@ -39,12 +24,20 @@ class TicketListViewModel(
     fun loadTickets() {
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true)
-            delay(2000)
 
-            uiState = uiState.copy(
-                isLoading = false,
-                histories = histories
-            )
+            repository.getMyBookings()
+                .onSuccess {
+                    uiState = uiState.copy(
+                        tickets = it,
+                        isLoading = false
+                    )
+                }
+                .onFailure {
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        errorMessage = it.message
+                    )
+                }
         }
     }
 }

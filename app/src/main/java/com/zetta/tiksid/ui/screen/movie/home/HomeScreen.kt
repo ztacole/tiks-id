@@ -120,7 +120,7 @@ private fun HomeScreenPrev() {
                         title = "Deadpool & Wolverine",
                         duration = 128,
                         poster = "",
-                        genre = listOf("Action")
+                        genres = listOf("Action")
                     ),
                     movies = List(12) {
                         Movie(
@@ -128,7 +128,7 @@ private fun HomeScreenPrev() {
                             title = "Title ${it + 1}",
                             duration = 128,
                             poster = "",
-                            genre = listOf("Action")
+                            genres = listOf("Action")
                         )
                     }
                 ),

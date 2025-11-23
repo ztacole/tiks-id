@@ -87,7 +87,7 @@ fun MovieCard(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = pluralStringResource(R.plurals.text_movie_overview, movie.duration, movie.genre[0], movie.duration),
+            text = pluralStringResource(R.plurals.text_movie_overview, movie.duration, movie.genres[0], movie.duration),
             style = overviewStyle.copy(color = Color.Gray),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -136,7 +136,7 @@ private fun MovieCardPreview() {
                     title = "Deadpool & Wolverine",
                     duration = 128,
                     poster = "",
-                    genre = listOf("Action")
+                    genres = listOf("Action")
                 ),
                 onClick = {},
                 modifier = Modifier.padding(12.dp)

@@ -10,13 +10,15 @@ import com.zetta.tiksid.data.model.MovieBooking
 import com.zetta.tiksid.data.model.TheaterSchedule
 import com.zetta.tiksid.data.model.TimeSchedule
 import com.zetta.tiksid.data.repository.MovieRepository
+import com.zetta.tiksid.data.repository.TicketRepository
 import com.zetta.tiksid.utils.formatDateToYear
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BookingViewModel(
     savedStateHandle: SavedStateHandle,
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieRepository,
+    private val ticketRepository: TicketRepository
 ): ViewModel() {
     private val movieId: Int = savedStateHandle["movieId"] ?: 0
 
@@ -133,14 +135,6 @@ class BookingViewModel(
             price = timeSchedule.price
         )
 
-        // Update seats with filled seats from this schedule
-//        val updatedSeats = uiState.seats.mapValues { (seatId, seat) ->
-//            when {
-//                timeSchedule.filledSeats.contains(seatId) -> seat.copy(status = SeatStatus.UNAVAILABLE)
-//                seat.status == SeatStatus.SELECTED -> seat.copy(status = SeatStatus.AVAILABLE)
-//                else -> seat
-//            }
-//        }
         val updatedSeats = uiState.seats.mapValues { (_, columnMap) ->
             columnMap.mapValues { (_, seatList) ->
                 seatList.map { seat ->
@@ -165,38 +159,6 @@ class BookingViewModel(
             totalPrice = 0
         )
     }
-
-//    fun toggleSeatSelection(seatId: String) {
-//        val seat = uiState.seats[seatId] ?: return
-//
-//        if (uiState.selectedShowTime == null) {
-//            uiState = uiState.copy(toastMessage = "Please select a showtime")
-//            return
-//        }
-//        if (seat.status == SeatStatus.UNAVAILABLE) return
-//        if (uiState.selectedSeats.size >= 8 && seat.status != SeatStatus.SELECTED){
-//            uiState = uiState.copy(toastMessage = "You can only select up to 8 seats")
-//            return
-//        }
-//
-//        val newStatus = if (seat.status == SeatStatus.SELECTED) {
-//            SeatStatus.AVAILABLE
-//        } else {
-//            SeatStatus.SELECTED
-//        }
-//
-//        val updatedSeats = uiState.seats.toMutableMap()
-//        updatedSeats[seatId] = seat.copy(status = newStatus)
-//
-//        val selectedSeats = updatedSeats.values.filter { it.status == SeatStatus.SELECTED }
-//        val totalPrice  =selectedSeats.size * uiState.pricePerSeat
-//
-//        uiState = uiState.copy(
-//            seats = updatedSeats,
-//            selectedSeats = selectedSeats,
-//            totalPrice = totalPrice
-//        )
-//    }
 
     fun toggleSeatSelection(seatId: String) {
         val found = findSeat(uiState.seats, seatId) ?: return
@@ -246,26 +208,23 @@ class BookingViewModel(
     }
 
     fun proceedToPayment() {
-        // Data will be used for payment
-        val paymentData = PaymentData(
-            scheduleId = uiState.selectedShowTime!!.scheduleId,
-            movieTitle = uiState.movie?.title ?: "",
-            theaterName = uiState.selectedTheater?.name ?: "",
-            date = uiState.selectedDate ?: "",
-            time = uiState.selectedShowTime!!.time,
-            selectedSeats = uiState.selectedSeats.map { it.id },
-            totalPrice = uiState.totalPrice
-        )
-
         viewModelScope.launch {
             paymentState = paymentState.copy(isLoading = true, confirmPayment = false)
-            delay(2000)
-            paymentState = paymentState.copy(
-                isLoading = false,
-                paymentSucceed = true
-            )
 
-            // Error handler
+            ticketRepository.bookSeats(
+                uiState.selectedShowTime!!.scheduleId,
+                uiState.selectedSeats.map { it.id }
+            ).onSuccess {
+                paymentState = paymentState.copy(
+                    isLoading = false,
+                    paymentSucceed = true
+                )
+            }.onFailure {
+                paymentState = paymentState.copy(
+                    isLoading = false,
+                    errorMessage = it.message ?: "Failed to book seats"
+                )
+            }
         }
     }
 
