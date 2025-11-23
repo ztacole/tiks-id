@@ -3,7 +3,6 @@ package com.zetta.tiksid.network
 import com.zetta.tiksid.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpSend
@@ -42,11 +41,9 @@ class ApiClient(
                 encodeDefaults = true
             })
         }
-        install(DefaultRequest) {
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-        }
         defaultRequest {
             url(BuildConfig.BASE_URL)
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
 
         // Configure Retry Policy
@@ -59,6 +56,8 @@ class ApiClient(
         }
         install(HttpTimeout) {
             requestTimeoutMillis = 10000
+            connectTimeoutMillis = 5000
+            socketTimeoutMillis = 5000
         }
 
         // Configure Cache Plugin
@@ -73,16 +72,19 @@ class ApiClient(
 
         HttpResponseValidator {
             validateResponse {
-                if (it.status == HttpStatusCode.Unauthorized && !it.request.url.fullPath.contains("/auth/login")) {
-                    CoroutineScope(Dispatchers.IO).launch { sessionManager.clearSession() }
+                val unauthorized = it.status == HttpStatusCode.Unauthorized
+                val isLoginPath = it.request.url.fullPath.contains("/auth/login")
+                if (unauthorized && !isLoginPath) {
+                    CoroutineScope(Dispatchers.IO).launch { sessionManager.triggerRefreshSession() }
                 }
             }
         }
     }.also { client ->
         client.plugin(HttpSend).intercept { request ->
-            val token = sessionManager.getToken()
+            val token = sessionManager.getAccessToken()
+            val tokenType = sessionManager.getTokenType()
             if (!token.isNullOrEmpty()) {
-                request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+                request.headers.append(HttpHeaders.Authorization, "$tokenType $token")
             }
             execute(request)
         }
