@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zetta.tiksid.R
 import com.zetta.tiksid.data.model.Movie
+import com.zetta.tiksid.ui.components.EmptyBox
 import com.zetta.tiksid.ui.components.screen.MovieCard
 import com.zetta.tiksid.ui.components.screen.ShimmerMovieCard
 import com.zetta.tiksid.ui.theme.AppTheme
@@ -55,50 +56,59 @@ fun HomeScreen(
             )
             Spacer(Modifier.height(8.dp))
         }
-        item {
-            if (uiState.isLoading) {
-                ShimmerMovieCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-            } else {
-                MovieCard(
-                    movie = uiState.recentlyReleasedMovie!!,
-                    onClick = onNavigateToMovieDetail,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    titleStyle = MaterialTheme.typography.titleLarge,
-                    overviewStyle = MaterialTheme.typography.bodyLarge
+        if (uiState.errorMessage != null) {
+            item {
+                EmptyBox(
+                    modifier = Modifier.fillMaxSize(),
+                    text = uiState.errorMessage,
                 )
             }
-            Spacer(Modifier.height(28.dp))
-        }
-        item {
-            Text(
-                text = stringResource(R.string.home_text_other_movies),
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-            Spacer(Modifier.height(4.dp))
-            LazyRow(
-                overscrollEffect = null,
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp + Constants.NAVIGATION_BAR_HEIGHT)
-            ) {
+        } else {
+            item {
                 if (uiState.isLoading) {
-                    items(3) {
-                        ShimmerMovieCard(modifier = Modifier.width(170.dp))
-                    }
+                    ShimmerMovieCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
                 } else {
-                    items(uiState.movies.size) {
-                        val movie = uiState.movies[it]
+                    MovieCard(
+                        movie = uiState.recentlyReleasedMovie!!,
+                        onClick = onNavigateToMovieDetail,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        titleStyle = MaterialTheme.typography.titleLarge,
+                        overviewStyle = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                Spacer(Modifier.height(28.dp))
+            }
+            item {
+                Text(
+                    text = stringResource(R.string.home_text_other_movies),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+                Spacer(Modifier.height(4.dp))
+                LazyRow(
+                    overscrollEffect = null,
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp + Constants.NAVIGATION_BAR_HEIGHT)
+                ) {
+                    if (uiState.isLoading) {
+                        items(3) {
+                            ShimmerMovieCard(modifier = Modifier.width(170.dp))
+                        }
+                    } else {
+                        items(uiState.movies.size) {
+                            val movie = uiState.movies[it]
 
-                        MovieCard(
-                            movie = movie,
-                            onClick = onNavigateToMovieDetail,
-                            modifier = Modifier.width(170.dp)
-                        )
+                            MovieCard(
+                                movie = movie,
+                                onClick = onNavigateToMovieDetail,
+                                modifier = Modifier.width(170.dp)
+                            )
+                        }
                     }
                 }
             }

@@ -11,5 +11,5 @@ data class MovieBooking(
     @SerialName("release_date") val releaseDate: String,
     val poster: String,
     val genres: List<String>,
-    @SerialName("available_theaters") val availableTheaters: List<TheaterSchedule>
+    @SerialName("available_theaters") val availableTheaters: List<TheaterSchedule>?
 )

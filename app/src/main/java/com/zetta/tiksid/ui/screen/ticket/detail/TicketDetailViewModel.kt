@@ -36,7 +36,7 @@ class TicketDetailViewModel(
                 .onFailure {
                     uiState = uiState.copy(
                         isLoading = false,
-                        errorMessages = it.message
+                        errorMessage = it.message
                     )
                 }
         }

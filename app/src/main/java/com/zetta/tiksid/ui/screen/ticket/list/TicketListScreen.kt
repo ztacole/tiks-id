@@ -1,6 +1,5 @@
 package com.zetta.tiksid.ui.screen.ticket.list
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +10,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zetta.tiksid.R
+import com.zetta.tiksid.ui.components.EmptyBox
 import com.zetta.tiksid.ui.components.screen.HistoryCard
 import com.zetta.tiksid.ui.components.screen.ShimmerHistoryCard
 import com.zetta.tiksid.utils.Constants
@@ -39,54 +37,48 @@ fun TicketListScreen(
             modifier = Modifier.padding(horizontal = 24.dp)
         )
         Spacer(Modifier.height(8.dp))
-        if (uiState.errorMessage != null) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = uiState.errorMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.Center),
-                    textAlign = TextAlign.Center
-                )
-            }
-        } else if (uiState.tickets.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = stringResource(R.string.ticket_list_text_no_ticket),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.Center),
-                    textAlign = TextAlign.Center
-                )
-            }
-        } else {
+        if (uiState.isLoading) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
-                overscrollEffect = null,
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = 16.dp,
                     end = 16.dp,
                     bottom = 24.dp + Constants.NAVIGATION_BAR_HEIGHT
-                )
+                ),
+                overscrollEffect = null
             ) {
-                if (uiState.isLoading) {
-                    items(3) {
-                        ShimmerHistoryCard()
-                    }
-                } else {
-                    items(uiState.tickets.size) { index ->
-                        val history = uiState.tickets[index]
-
-                        HistoryCard(
-                            ticket = history,
-                            onCLick = onNavigateToTicketDetail
-                        )
-                    }
+                items(3) {
+                    ShimmerHistoryCard()
                 }
             }
+        } else if (uiState.errorMessage != null) {
+            EmptyBox(
+                modifier = Modifier.fillMaxSize(),
+                text = uiState.errorMessage
+            )
+        } else if (uiState.tickets.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 24.dp + Constants.NAVIGATION_BAR_HEIGHT
+                ),
+                overscrollEffect = null
+            ) {
+                items(uiState.tickets.size) { index ->
+                    val history = uiState.tickets[index]
+                    HistoryCard(
+                        ticket = history,
+                        onCLick = onNavigateToTicketDetail
+                    )
+                }
+            }
+        } else {
+            EmptyBox(
+                modifier = Modifier.fillMaxSize(),
+                text = stringResource(R.string.ticket_list_text_no_ticket)
+            )
         }
     }
 }

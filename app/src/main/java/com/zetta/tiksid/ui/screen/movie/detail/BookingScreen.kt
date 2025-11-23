@@ -1,6 +1,10 @@
 package com.zetta.tiksid.ui.screen.movie.detail
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +18,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +25,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -46,6 +50,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.zetta.tiksid.R
+import com.zetta.tiksid.data.model.DateSchedule
 import com.zetta.tiksid.data.model.TimeSchedule
 import com.zetta.tiksid.ui.components.AppButton
 import com.zetta.tiksid.ui.components.AppDialog
@@ -54,6 +59,7 @@ import com.zetta.tiksid.ui.components.screen.GenreChip
 import com.zetta.tiksid.ui.components.screen.SeatItem
 import com.zetta.tiksid.ui.components.screen.SelectableChip
 import com.zetta.tiksid.utils.formatRupiah
+import com.zetta.tiksid.utils.shimmerLoading
 
 @Composable
 fun BookingScreen(
@@ -71,6 +77,7 @@ fun BookingScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(paymentState.paymentSucceed) {
         if (paymentState.paymentSucceed) onNavigateToTicketList()
@@ -82,213 +89,110 @@ fun BookingScreen(
         }
     }
 
-    if (uiState.errorMessage != null) {
-        Box(Modifier.fillMaxSize()) {
-            Text(
-                text = uiState.errorMessage,
-                modifier = Modifier.align(Alignment.Center),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-
-    if (uiState.isLoading) {
-        Box(Modifier.fillMaxSize()) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-    } else {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            overscrollEffect = null,
-            verticalArrangement = Arrangement.spacedBy(32.dp),
-            contentPadding = PaddingValues(bottom = 48.dp)
-        ) {
-            item {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    SubcomposeAsyncImage(
-                        model = uiState.movie?.poster,
-                        contentDescription = null,
-                        loading = {
-                            Box(modifier = Modifier.fillMaxSize())
-                        },
-                        error = {
-                            Image(
-                                painter = painterResource(id = R.drawable.error_image_placeholder),
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        },
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.FillWidth
-                    )
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    listOf(
-                                        Color.Transparent,
-                                        MaterialTheme.colorScheme.surface,
-                                    )
-                                )
-                            )
-                    )
-                    Column(
-                        modifier = Modifier.matchParentSize()
-                    ) {
-                        Spacer(Modifier.weight(1f))
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                        ) {
-                            Text(
-                                text = uiState.movie?.title ?: "",
-                                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            Text(
-                                text = pluralStringResource(
-                                    R.plurals.text_movie_overview,
-                                    uiState.movie?.duration ?: 0,
-                                    uiState.movie?.releaseDate ?: "",
-                                    uiState.movie?.duration ?: 0
-                                ),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.LightGray,
-                            )
-                            Spacer(Modifier.height(12.dp))
-                            FlowRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                val items = uiState.movie?.genres ?: emptyList()
-                                items.forEach { genre ->
-                                    GenreChip(genre)
-                                }
-                            }
-                            Spacer(Modifier.height(12.dp))
-                            Text(
-                                text = uiState.movie?.description ?: "",
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                    }
-                }
+    when {
+        uiState.errorMessage != null -> {
+            Box(Modifier.fillMaxSize()) {
+                Text(
+                    text = uiState.errorMessage,
+                    modifier = Modifier.align(Alignment.Center),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
             }
-            if (uiState.theaters.isEmpty()) {
-                item { StayTunedCard(Modifier.padding(horizontal = 24.dp)) }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(R.string.detail_text_theater),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    AppDropdown(
-                        items = uiState.theaters.flatMap { listOf(it.name) },
-                        selectedItem = uiState.selectedTheater?.name ?: "",
-                        onItemSelected = {
-                            onSelectTheater(
-                                uiState.theaters.find { theater -> theater.name == it }?.id ?: 0
-                            )
-                        },
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
-                }
-
-                item {
-                    Text(
-                        text = stringResource(R.string.detail_text_date),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 24.dp)
-                    ) {
-                        items(uiState.availableDates) { date ->
-                            SelectableChip(
-                                text = date.date,
-                                isSelected = uiState.selectedDate == date.date,
-                                onClick = { onSelectDate(date.date) }
+        }
+        uiState.isLoading -> {
+            Box(Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+        uiState.movie == null -> {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface))
+        }
+        else -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = modifier.fillMaxSize(),
+                    overscrollEffect = null,
+                    verticalArrangement = Arrangement.spacedBy(32.dp),
+                    contentPadding = PaddingValues(bottom = 112.dp),
+                    state = lazyListState
+                ) {
+                    item {
+                        PosterSection(uiState.movie)
+                    }
+                    if (uiState.theaters.isEmpty()) {
+                        item { StayTunedCard(Modifier.padding(horizontal = 24.dp)) }
+                    } else {
+                        item {
+                            TheaterSelector(
+                                theaters = uiState.theaters,
+                                selectedTheater = uiState.selectedTheater,
+                                onSelectTheater = onSelectTheater
                             )
                         }
-                    }
-                }
 
-                item {
-                    Text(
-                        text = stringResource(R.string.detail_text_available_time),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 24.dp)
-                    ) {
-                        items(uiState.availableShowTimes) { showTime ->
-                            SelectableChip(
-                                text = showTime.time,
-                                isSelected = uiState.selectedShowTime?.time == showTime.time,
-                                onClick = { onSelectTime(showTime) }
+                        item {
+                            DateSelector(
+                                availableDates = uiState.availableDates,
+                                selectedDate = uiState.selectedDate,
+                                onSelectDate = onSelectDate
                             )
                         }
-                    }
-                }
 
-                item {
-                    Text(
-                        text = stringResource(R.string.detail_text_choose_seat),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = PaddingValues(horizontal = 24.dp),
-                        overscrollEffect = null
-                    ) {
-                        items(uiState.seats.keys.toList(), key = { it }) { sectionId ->
+                        item {
+                            AnimatedVisibility(
+                                visible = uiState.selectedDate != null,
+                                enter = fadeIn(tween(250)),
+                                exit = fadeOut(tween(250))
+                            ) {
+                                Column {
+                                    TimeSelector(
+                                        availableShowTimes = uiState.availableShowTimes,
+                                        selectedShowTime = uiState.selectedShowTime,
+                                        onSelectTime
+                                    )
+                                }
+                            }
+                        }
 
-                            val columnMap = uiState.seats[sectionId]!!
-
-                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-
-                                columnMap.forEach { (_, seatsInColumn) ->
-                                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                                        seatsInColumn.forEach { seat ->
-                                            SeatItem(
-                                                seat = seat,
-                                                status = seat.status,
-                                                onSeatSelected = onSelectSeat
-                                            )
-                                        }
-                                    }
+                        item {
+                            AnimatedVisibility(
+                                visible = uiState.selectedShowTime != null,
+                                enter = fadeIn(tween(250)),
+                                exit = fadeOut(tween(250))
+                            ) {
+                                Column {
+                                    SeatSelectionSection(
+                                        seats = uiState.seats,
+                                        onSelectSeat = onSelectSeat
+                                    )
                                 }
                             }
                         }
                     }
                 }
 
-                item {
-                    PaymentButton(
-                        total = uiState.totalPrice,
-                        onClick = onShowConfirmationDialog,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
+                // Floating payment button
+                if (uiState.theaters.isNotEmpty()) {
+                    AnimatedVisibility(
+                        visible = uiState.selectedSeats.isNotEmpty(),
+                        enter = fadeIn(tween(250)),
+                        exit = fadeOut(tween(250)),
+                        modifier = Modifier.align(Alignment.BottomCenter)
+                    ) {
+                        PaymentButton(
+                            total = uiState.totalPrice,
+                            onClick = onShowConfirmationDialog,
+                            modifier = Modifier
+                                .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
+                                .align(Alignment.BottomCenter)
+                        )
+                    }
                 }
             }
         }
@@ -361,22 +265,251 @@ fun BookingScreen(
 }
 
 @Composable
-fun PaymentButton(
+fun PosterSection(
+    movie: MovieDetail
+) {
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        PosterImage(movie.poster)
+        GradientOverlay(modifier = Modifier.matchParentSize())
+        PosterContent(
+            title = movie.title,
+            duration = movie.duration,
+            releaseDate = movie.releaseDate,
+            genres = movie.genres,
+            description = movie.description,
+            modifier = Modifier.align(Alignment.BottomStart)
+        )
+    }
+}
+
+@Composable
+private fun PosterImage(
+    poster: String
+) {
+    SubcomposeAsyncImage(
+        model = poster,
+        contentDescription = null,
+        loading = {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(480.dp)
+                .shimmerLoading())
+        },
+        error = {
+            Image(
+                painter = painterResource(id = R.drawable.error_image_placeholder),
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth().height(480.dp),
+                contentScale = ContentScale.Crop
+            )
+        },
+        modifier = Modifier.fillMaxWidth().height(480.dp),
+        contentScale = ContentScale.FillWidth
+    )
+}
+
+@Composable
+private fun GradientOverlay(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    listOf(
+                        Color.Transparent,
+                        MaterialTheme.colorScheme.surface,
+                    )
+                )
+            )
+    )
+}
+
+@Composable
+private fun PosterContent(
+    title: String,
+    duration: Int,
+    releaseDate: String,
+    genres: List<String>,
+    description: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        Spacer(Modifier.weight(1f))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = pluralStringResource(
+                    R.plurals.text_movie_overview,
+                    duration,
+                    releaseDate,
+                    duration
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.LightGray,
+            )
+            Spacer(Modifier.height(12.dp))
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                val items = genres
+                items.forEach { genre ->
+                    GenreChip(genre)
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
+}
+
+@Composable
+private fun TheaterSelector(
+    theaters: List<Theater>,
+    selectedTheater: Theater?,
+    onSelectTheater: (Int) -> Unit
+) {
+    Text(
+        text = stringResource(R.string.detail_text_theater),
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 24.dp)
+    )
+    Spacer(Modifier.height(8.dp))
+    AppDropdown(
+        items = theaters.flatMap { listOf(it.name) },
+        selectedItem = selectedTheater?.name ?: "",
+        onItemSelected = {
+            onSelectTheater(
+                theaters.find { theater -> theater.name == it }?.id ?: 0
+            )
+        },
+        modifier = Modifier.padding(horizontal = 24.dp)
+    )
+}
+
+@Composable
+private fun DateSelector(
+    availableDates: List<DateSchedule>,
+    selectedDate: String?,
+    onSelectDate: (String) -> Unit
+) {
+    Text(
+        text = stringResource(R.string.detail_text_date),
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 24.dp)
+    )
+    Spacer(Modifier.height(8.dp))
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp)
+    ) {
+        items(availableDates) { date ->
+            val splitDate = date.date.split(" ")
+            val day = splitDate[0]
+            val month = splitDate[1]
+            val year = splitDate[2]
+            val formattedDate = "$day $month\n$year"
+            SelectableChip(
+                text = formattedDate,
+                isSelected = selectedDate == date.date,
+                onClick = { onSelectDate(date.date) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun TimeSelector(
+    availableShowTimes: List<TimeSchedule>,
+    selectedShowTime: ShowTime?,
+    onSelectTime: (TimeSchedule) -> Unit
+) {
+    Text(
+        text = stringResource(R.string.detail_text_available_time),
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 24.dp)
+    )
+    Spacer(Modifier.height(8.dp))
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp)
+    ) {
+        items(availableShowTimes) { showTime ->
+            SelectableChip(
+                text = showTime.time,
+                isSelected = selectedShowTime?.time == showTime.time,
+                onClick = { onSelectTime(showTime) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SeatSelectionSection(
+    seats: Map<String, Map<Int, List<Seat>>>,
+    onSelectSeat: (String) -> Unit
+) {
+    Text(
+        text = stringResource(R.string.detail_text_choose_seat),
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 24.dp)
+    )
+    Spacer(Modifier.height(8.dp))
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp),
+        overscrollEffect = null
+    ) {
+        items(seats.keys.toList(), key = { it }) { sectionId ->
+
+            val columnMap = seats[sectionId]!!
+
+            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+
+                columnMap.forEach { (_, seatsInColumn) ->
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        seatsInColumn.forEach { seat ->
+                            SeatItem(
+                                seat = seat,
+                                status = seat.status,
+                                onSeatSelected = onSelectSeat
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PaymentButton(
     total: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (total > 0) MaterialTheme.colorScheme.primary
-    else MaterialTheme.colorScheme.primary.copy(alpha = 0.65f)
-
-    val textColor = if (total > 0) MaterialTheme.colorScheme.onPrimary
-    else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.65f)
-
     Row(
         modifier = modifier
             .clickable(enabled = total > 0, onClick = onClick)
             .fillMaxWidth()
-            .background(backgroundColor, CircleShape)
+            .background(MaterialTheme.colorScheme.primary, CircleShape)
             .padding(horizontal = 24.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -385,25 +518,25 @@ fun PaymentButton(
             Text(
                 text = pluralStringResource(R.plurals.detail_button_buy_ticket, total),
                 style = MaterialTheme.typography.bodySmall,
-                color = textColor
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
                 text = formatRupiah(total),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = textColor
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
         Icon(
             imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
             contentDescription = null,
             modifier = Modifier.size(28.dp),
-            tint = textColor
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
 
 @Composable
-fun StayTunedCard(modifier: Modifier = Modifier) {
+private fun StayTunedCard(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()

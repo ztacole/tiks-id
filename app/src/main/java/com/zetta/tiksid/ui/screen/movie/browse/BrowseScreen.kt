@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.zetta.tiksid.R
 import com.zetta.tiksid.data.model.Movie
 import com.zetta.tiksid.ui.components.CompassRefreshIndicator
+import com.zetta.tiksid.ui.components.EmptyBox
 import com.zetta.tiksid.ui.components.screen.MovieCard
 import com.zetta.tiksid.ui.components.screen.ShimmerMovieCard
 import com.zetta.tiksid.ui.theme.AppTheme
@@ -84,61 +85,68 @@ fun BrowseScreen(
             modifier = Modifier.padding(horizontal = 24.dp)
         )
         Spacer(Modifier.height(8.dp))
-        PullToRefreshBox(
-            isRefreshing = uiState.isRefreshing,
-            onRefresh = onRefresh,
-            modifier = Modifier,
-            state = pullRefreshState,
-            indicator = {
-                CompassRefreshIndicator(
-                    progress = refreshFraction(),
-                    isRefreshing = uiState.isRefreshing,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                )
-            }
-        ) {
-            LazyVerticalGrid(
-                state = gridState,
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                contentPadding = PaddingValues(bottom = 24.dp + Constants.NAVIGATION_BAR_HEIGHT),
-                overscrollEffect = null
+        if (uiState.errorMessage != null) {
+            EmptyBox(
+                modifier = Modifier.fillMaxSize(),
+                text = uiState.errorMessage,
+            )
+        } else {
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = onRefresh,
+                modifier = Modifier,
+                state = pullRefreshState,
+                indicator = {
+                    CompassRefreshIndicator(
+                        progress = refreshFraction(),
+                        isRefreshing = uiState.isRefreshing,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                    )
+                }
             ) {
-                if (uiState.isLoading) {
-                    items(4) {
-                        ShimmerMovieCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .graphicsLayer {
-                                    translationY = refreshFraction() * 280f
-                                }
-                        )
-                    }
-                } else {
-                    items(uiState.movies, key = { it.id }) { movie ->
-                        MovieCard(
-                            movie = movie,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .graphicsLayer {
-                                    translationY = refreshFraction() * 320f
-                                },
-                            onClick = onNavigateToMovieDetail
-                        )
-                    }
-
-                    if (uiState.isLoadingMore) {
-                        item(span = { GridItemSpan(maxLineSpan) }) {
-                            Box(
+                LazyVerticalGrid(
+                    state = gridState,
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    contentPadding = PaddingValues(bottom = 24.dp + Constants.NAVIGATION_BAR_HEIGHT),
+                    overscrollEffect = null
+                ) {
+                    if (uiState.isLoading) {
+                        items(4) {
+                            ShimmerMovieCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 24.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
+                                    .graphicsLayer {
+                                        translationY = refreshFraction() * 280f
+                                    }
+                            )
+                        }
+                    } else {
+                        items(uiState.movies, key = { it.id }) { movie ->
+                            MovieCard(
+                                movie = movie,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .graphicsLayer {
+                                        translationY = refreshFraction() * 320f
+                                    },
+                                onClick = onNavigateToMovieDetail
+                            )
+                        }
+
+                        if (uiState.isLoadingMore) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 24.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
                             }
                         }
                     }

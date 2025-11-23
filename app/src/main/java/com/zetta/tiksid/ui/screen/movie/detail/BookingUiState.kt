@@ -1,5 +1,6 @@
 package com.zetta.tiksid.ui.screen.movie.detail
 
+import androidx.compose.runtime.Stable
 import com.zetta.tiksid.data.model.DateSchedule
 import com.zetta.tiksid.data.model.TimeSchedule
 
@@ -37,6 +38,7 @@ data class MovieDetail(
     val genres: List<String>,
 )
 
+@Stable
 data class Theater(
     val id: Int,
     val name: String,
@@ -54,6 +56,7 @@ data class SeatSection(
     val columns: List<Int>
 )
 
+@Stable
 data class Seat(
     val id: String,
     val row: String,

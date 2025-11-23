@@ -1,5 +1,6 @@
 package com.zetta.tiksid.ui.screen.ticket.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.zetta.tiksid.ui.components.EmptyBox
 import com.zetta.tiksid.ui.components.screen.TicketDisplay
 import com.zetta.tiksid.utils.shimmerLoading
 
@@ -27,28 +29,42 @@ fun TicketDetailScreen(
         contentPadding = PaddingValues(top = 24.dp, bottom = 48.dp, start = 24.dp, end = 24.dp),
         overscrollEffect = null
     ) {
-        if (uiState.isLoading || uiState.ticket == null) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium)
-                        .aspectRatio(2/3f)
-                        .shimmerLoading()
-                )
+        when {
+            uiState.isLoading -> {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(MaterialTheme.shapes.medium)
+                            .aspectRatio(2/3f)
+                            .shimmerLoading()
+                    )
+                }
             }
-        } else {
-            items(uiState.ticket.seats.size) { index ->
-                val seat = uiState.ticket.seats[index]
+            uiState.errorMessage != null -> {
+                item {
+                    EmptyBox(
+                        modifier = Modifier.fillMaxSize(),
+                        text = uiState.errorMessage,
+                    )
+                }
+            }
+            uiState.ticket == null -> {
+                item { Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) }
+            }
+            else -> {
+                items(uiState.ticket.seats.size) { index ->
+                    val seat = uiState.ticket.seats[index]
 
-                TicketDisplay(
-                    title = uiState.ticket.movieTitle,
-                    genre = uiState.ticket.movieGenres[0],
-                    duration = uiState.ticket.movieDuration,
-                    theater = uiState.ticket.theaterName,
-                    schedule = uiState.ticket.scheduleDate,
-                    seat = seat,
-                )
+                    TicketDisplay(
+                        title = uiState.ticket.movieTitle,
+                        genre = uiState.ticket.movieGenres[0],
+                        duration = uiState.ticket.movieDuration,
+                        theater = uiState.ticket.theaterName,
+                        schedule = uiState.ticket.scheduleDate,
+                        seat = seat,
+                    )
+                }
             }
         }
     }

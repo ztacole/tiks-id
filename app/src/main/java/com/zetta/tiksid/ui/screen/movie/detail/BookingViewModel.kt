@@ -12,7 +12,9 @@ import com.zetta.tiksid.data.model.TimeSchedule
 import com.zetta.tiksid.data.repository.MovieRepository
 import com.zetta.tiksid.data.repository.TicketRepository
 import com.zetta.tiksid.utils.formatDateToYear
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BookingViewModel(
     savedStateHandle: SavedStateHandle,
@@ -27,7 +29,6 @@ class BookingViewModel(
         private set
 
     private var movieScheduleResponse: MovieBooking? = null
-    private var currentTheaterSchedule: TheaterSchedule? = null
 
     init {
         loadBookingData()
@@ -40,34 +41,47 @@ class BookingViewModel(
             movieRepository.getMovieById(movieId).fold(
                 onSuccess = { response ->
                     movieScheduleResponse = response
-                    val movie = MovieDetail(
-                        id = movieId,
-                        title = response.title,
-                        description = response.description,
-                        duration = response.duration,
-                        releaseDate = formatDateToYear(response.releaseDate),
-                        poster = response.poster,
-                        genres = response.genres
-                    )
-                    if (response.availableTheaters.isNotEmpty()) {
-                        val firstTheater = response.availableTheaters.first()
-                        currentTheaterSchedule = firstTheater
 
-                        val theater = createTheaterFromResponse(firstTheater)
-                        val seats = generateSeatsForTheater(theater, emptyList())
+                    // Use background thread
+                    val movieDetail = withContext(Dispatchers.Default) {
+                        MovieDetail(
+                            id = movieId,
+                            title = response.title,
+                            description = response.description,
+                            duration = response.duration,
+                            releaseDate = formatDateToYear(response.releaseDate),
+                            poster = response.poster,
+                            genres = response.genres
+                        )
+                    }
 
+                    if (response.availableTheaters.isNullOrEmpty()) {
                         uiState = uiState.copy(
-                            movie = movie,
-                            theaters = response.availableTheaters.map { createTheaterFromResponse(it) },
+                            movie = movieDetail,
+                            isLoading = false,
+                        )
+                    } else {
+                        val firstTheater = response.availableTheaters.first()
+
+                        // Generate seats on background thread
+                        val (theater, seats) = withContext(Dispatchers.Default) {
+                            val theaterObj = createTheaterFromResponse(firstTheater)
+                            val seatsObj = generateSeatsForTheater(theaterObj, emptyList())
+                            theaterObj to seatsObj
+                        }
+
+                        // Single state update
+                        uiState = uiState.copy(
+                            movie = movieDetail,
+                            theaters = response.availableTheaters.map {
+                                withContext(Dispatchers.Default) {
+                                    createTheaterFromResponse(it)
+                                }
+                            },
                             selectedTheater = theater,
                             availableDates = firstTheater.availableDates,
                             seats = seats,
                             isLoading = false
-                        )
-                    } else {
-                        uiState = uiState.copy(
-                            movie = movie,
-                            isLoading = false,
                         )
                     }
                 },
@@ -82,11 +96,11 @@ class BookingViewModel(
     }
 
     fun selectTheater(theaterId: Int) {
+        if (theaterId == uiState.selectedTheater?.id) return
+
         val theaterSchedule = movieScheduleResponse?.availableTheaters?.find {
             it.theaterId == theaterId
         } ?: return
-
-        currentTheaterSchedule = theaterSchedule
 
         val theater = createTheaterFromResponse(theaterSchedule)
         val seats = generateSeatsForTheater(theater, emptyList())
@@ -105,6 +119,8 @@ class BookingViewModel(
     }
 
     fun selectDate(date: String) {
+        if (date == uiState.selectedDate) return
+
         val dateSchedule = uiState.availableDates.find { it.date == date } ?: return
 
         uiState = uiState.copy(
@@ -126,6 +142,8 @@ class BookingViewModel(
     }
 
     fun selectShowTime(timeSchedule: TimeSchedule) {
+        if (timeSchedule.time == uiState.selectedShowTime?.time) return
+
         val showTime = ShowTime(
             scheduleId = timeSchedule.scheduleId,
             time = timeSchedule.time,
@@ -283,7 +301,14 @@ class BookingViewModel(
         theater: Theater,
         filledSeats: List<String>
     ): Map<String, Map<Int, List<Seat>>> {
-        val seats = LinkedHashMap<String, Seat>(theater.columnCount * theater.rowCount)
+        val filledSet = filledSeats.toSet() // O(n) lookup instead of O(n²)
+
+        val seatSections = LinkedHashMap<String, MutableMap<Int, MutableList<Seat>>>()
+
+        // Initialize sections
+        theater.sections.forEach { section ->
+            seatSections[section.id] = LinkedHashMap()
+        }
 
         for (colIndex in 0 until theater.columnCount) {
             val rowLabel = ('A' + colIndex).toString()
@@ -291,33 +316,28 @@ class BookingViewModel(
             for (row in 1..theater.rowCount) {
                 val seatId = "$rowLabel$row"
 
-                val section = theater.sections.first {
-                    row - 1 in it.rowStart..it.rowEnd
-                }
+                val section = theater.sections.firstOrNull {
+                    (row - 1) in it.rowStart..it.rowEnd
+                } ?: continue
 
-                seats[seatId] = Seat(
+                val seat = Seat(
                     id = seatId,
                     row = rowLabel,
                     column = row,
                     sectionId = section.id,
                     displayLabel = seatId,
-                    status = if (seatId in filledSeats) SeatStatus.UNAVAILABLE else SeatStatus.AVAILABLE
+                    status = if (seatId in filledSet) SeatStatus.UNAVAILABLE else SeatStatus.AVAILABLE
                 )
+
+                seatSections[section.id]!!
+                    .getOrPut(row) { mutableListOf() }
+                    .add(seat)
             }
         }
 
-        val seatSections = seats.values
-            .groupBy { it.sectionId }
-            .mapValues { (_, seatsInSection) ->
-                seatsInSection
-                    .groupBy { it.column }
-                    .mapValues { (_, seatsInColumn) ->
-                        seatsInColumn.sortedBy { it.row }
-                    }
-                    .toSortedMap()
-            }
-
-        return seatSections
+        return seatSections.mapValues { (_, columns) ->
+            columns.mapValues { (_, seats) -> seats.sortedBy { it.row } }
+        }
     }
 
     fun clearPaymentError() {
