@@ -7,13 +7,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zetta.tiksid.R
+import com.zetta.tiksid.data.repository.AuthRepository
 import com.zetta.tiksid.utils.ResourceProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.compareTo
 
 class SignUpViewModel(
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val repository: AuthRepository
 ): ViewModel() {
     var signUpUiState by mutableStateOf(SignUpUiState())
         private set
@@ -22,23 +24,21 @@ class SignUpViewModel(
         viewModelScope.launch {
             clearValidationSignUpState()
             if (!validateSignUpInput()) return@launch
-
             signUpUiState = signUpUiState.copy(isAuthenticating = true)
-            delay(2000)
-            signUpUiState = signUpUiState.copy(isAuthenticating = false, authenticationSucceed = true)
-//            repository.signUp(signUpUiState.name, signUpUiState.email, signUpUiState.password, signUpUiState.confirmPassword)
-//                .onSuccess {
-//                    signInUiState = signUpUiState.copy(
-//                        authenticationSucceed = true,
-//                        isAuthenticating = false
-//                    )
-//                }
-//                .onFailure {
-//                    signInUiState = signUpUiState.copy(
-//                        authenticationErrorMessage = it.message,
-//                        isAuthenticating = false,
-//                    )
-//                }
+
+            repository.register(signUpUiState.name, signUpUiState.email, signUpUiState.password)
+                .onSuccess {
+                    signUpUiState = signUpUiState.copy(
+                        authenticationSucceed = true,
+                        isAuthenticating = false
+                    )
+                }
+                .onFailure {
+                    signUpUiState = signUpUiState.copy(
+                        authenticationErrorMessage = it.message,
+                        isAuthenticating = false,
+                    )
+                }
         }
     }
 

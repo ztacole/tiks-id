@@ -1,6 +1,9 @@
 package com.zetta.tiksid.di
 
 import androidx.lifecycle.SavedStateHandle
+import com.zetta.tiksid.MainViewModel
+import com.zetta.tiksid.data.remote.AuthService
+import com.zetta.tiksid.data.repository.AuthRepository
 import com.zetta.tiksid.network.ApiClient
 import com.zetta.tiksid.network.SessionManager
 import com.zetta.tiksid.ui.screen.auth.signin.SignInViewModel
@@ -20,8 +23,13 @@ val appModule = module {
     single { SessionManager(get()) }
     single { ApiClient(get()) }
 
-    viewModel { SignInViewModel(get()) }
-    viewModel { SignUpViewModel(get()) }
+    single { AuthService(get<ApiClient>().client) }
+
+    single { AuthRepository(get(), get()) }
+
+    viewModel { MainViewModel(get()) }
+    viewModel { SignInViewModel(get(), get()) }
+    viewModel { SignUpViewModel(get(), get()) }
     viewModel { HomeViewModel() }
     viewModel { BrowseViewModel() }
     viewModel {(handle: SavedStateHandle) ->

@@ -7,12 +7,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zetta.tiksid.R
+import com.zetta.tiksid.data.repository.AuthRepository
 import com.zetta.tiksid.utils.ResourceProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val repository: AuthRepository
 ): ViewModel() {
     var signInUiState by mutableStateOf(SignInUiState())
         private set
@@ -21,24 +23,22 @@ class SignInViewModel(
         viewModelScope.launch {
             clearValidationSignInState()
             if (!validateSignInInput()) return@launch
-
             signInUiState = signInUiState.copy(isAuthenticating = true)
-            delay(2000)
-            signInUiState = signInUiState.copy(isAuthenticating = false, authenticationSucceed = true)
-//            repository.signIn(signInUiState.email, signInUiState.password)
-//                .onSuccess {
-//                    signInUiState = signInUiState.copy(
-//                        authenticationSucceed = true,
-//                        isAuthenticating = false
-//                    )
-//                }
-//                .onFailure {
-//                    signInUiState = signInUiState.copy(
-//                        authenticationErrorMessage = it.message,
-//                        isAuthenticating = false,
-//                        password = ""
-//                    )
-//                }
+
+            repository.login(signInUiState.email, signInUiState.password)
+                .onSuccess {
+                    signInUiState = signInUiState.copy(
+                        authenticationSucceed = true,
+                        isAuthenticating = false
+                    )
+                }
+                .onFailure {
+                    signInUiState = signInUiState.copy(
+                        authenticationErrorMessage = it.message,
+                        isAuthenticating = false,
+                        password = ""
+                    )
+                }
         }
     }
 
