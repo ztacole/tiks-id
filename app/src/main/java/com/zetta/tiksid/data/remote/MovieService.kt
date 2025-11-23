@@ -10,7 +10,7 @@ import io.ktor.client.request.get
 
 class MovieService(private val client: HttpClient) {
     companion object {
-        const val BASE_ROUTE = "movie"
+        private const val BASE_ROUTE = "movie"
     }
 
     suspend fun getMovies(page: Int, limit: Int): Result<MetaResponse<List<Movie>>> = safeApiCall {

@@ -14,12 +14,12 @@ import io.ktor.client.request.setBody
 
 class AuthService(private val client: HttpClient) {
     companion object {
-        const val BASE_ROUTE = "auth"
+        private const val BASE_ROUTE = "auth"
 
-        const val LOGIN = "$BASE_ROUTE/login"
-        const val REGISTER = "$BASE_ROUTE/register"
-        const val LOGOUT = "$BASE_ROUTE/logout"
-        const val REFRESH = "$BASE_ROUTE/refresh"
+        private const val LOGIN = "$BASE_ROUTE/login"
+        private const val REGISTER = "$BASE_ROUTE/register"
+        private const val LOGOUT = "$BASE_ROUTE/logout"
+        private const val REFRESH = "$BASE_ROUTE/refresh"
     }
 
     suspend fun login(email: String, password: String): Result<LoginResponse> = safeApiCall {
