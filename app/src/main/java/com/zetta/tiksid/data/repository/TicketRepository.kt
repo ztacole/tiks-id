@@ -1,6 +1,5 @@
 package com.zetta.tiksid.data.repository
 
-import android.util.Log
 import com.zetta.tiksid.data.model.Ticket
 import com.zetta.tiksid.data.remote.TicketService
 
@@ -27,11 +26,11 @@ class TicketRepository(private val api: TicketService) {
         }
     }
 
-    suspend fun bookSeats(scheduleId: Int, seats: List<String>): Result<Boolean> {
+    suspend fun bookSeats(scheduleId: Int, seats: List<String>): Result<Unit> {
         val response = api.bookSeats(scheduleId, seats)
         return if (response.isSuccess) {
             response.getOrNull()?.let {
-                Result.success(true)
+                Result.success(Unit)
             } ?: Result.failure(Exception("Failed to book seats"))
         } else {
             Result.failure(response.exceptionOrNull() ?: Exception("Failed to book seats"))
