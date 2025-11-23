@@ -12,7 +12,6 @@ import com.zetta.tiksid.data.model.TimeSchedule
 import com.zetta.tiksid.data.repository.MovieRepository
 import com.zetta.tiksid.data.repository.TicketRepository
 import com.zetta.tiksid.utils.formatDateToYear
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BookingViewModel(
@@ -292,7 +291,6 @@ class BookingViewModel(
             for (row in 1..theater.rowCount) {
                 val seatId = "$rowLabel$row"
 
-                // Precomputed: langsung ambil section yang benar
                 val section = theater.sections.first {
                     row - 1 in it.rowStart..it.rowEnd
                 }
