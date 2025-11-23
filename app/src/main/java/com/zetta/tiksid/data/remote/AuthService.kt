@@ -2,7 +2,7 @@ package com.zetta.tiksid.data.remote
 
 import com.zetta.tiksid.data.model.LoginRequest
 import com.zetta.tiksid.data.model.LoginResponse
-import com.zetta.tiksid.data.model.MessageResponse
+import com.zetta.tiksid.data.model.common.MessageResponse
 import com.zetta.tiksid.data.model.RefreshTokenRequest
 import com.zetta.tiksid.data.model.RefreshTokenResponse
 import com.zetta.tiksid.data.model.RegisterRequest

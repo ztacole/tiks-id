@@ -1,4 +1,4 @@
-package com.zetta.tiksid.data.model
+package com.zetta.tiksid.data.model.common
 
 import kotlinx.serialization.Serializable
 

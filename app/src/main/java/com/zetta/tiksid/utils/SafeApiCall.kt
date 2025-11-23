@@ -1,8 +1,7 @@
 package com.zetta.tiksid.utils
 
 import android.accounts.NetworkErrorException
-import com.zetta.tiksid.data.model.ErrorResponse
-import com.zetta.tiksid.network.BaseMessageResponse
+import com.zetta.tiksid.data.model.common.ErrorResponse
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.statement.HttpResponse
