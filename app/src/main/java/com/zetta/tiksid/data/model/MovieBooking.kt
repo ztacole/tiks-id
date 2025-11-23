@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MovieBooking(
-    val id: Int,
     val title: String,
     val description: String,
     val duration: Int,

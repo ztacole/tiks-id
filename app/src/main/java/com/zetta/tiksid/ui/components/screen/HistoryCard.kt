@@ -210,7 +210,7 @@ private fun Prev() {
                         id = 1,
                         title = "Deadpool & Wolverine",
                         poster = "",
-                        genre = "Action",
+                        genre = listOf("Action"),
                         duration = 128
                     ),
                     schedule = "28 Oct 2024 08:00",

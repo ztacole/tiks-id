@@ -23,7 +23,7 @@ class TicketListViewModel(
                 id = it + 1,
                 title = "Movie ${it + 1}",
                 poster = "",
-                genre = "Action",
+                genre = listOf("Action"),
                 duration = 128
             ),
             schedule = "28 Oct 2024 08:00",

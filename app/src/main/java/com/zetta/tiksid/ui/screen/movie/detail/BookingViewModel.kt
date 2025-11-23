@@ -6,16 +6,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zetta.tiksid.data.model.DateSchedule
 import com.zetta.tiksid.data.model.MovieBooking
 import com.zetta.tiksid.data.model.TheaterSchedule
 import com.zetta.tiksid.data.model.TimeSchedule
+import com.zetta.tiksid.data.repository.MovieRepository
 import com.zetta.tiksid.utils.formatDateToYear
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BookingViewModel(
     savedStateHandle: SavedStateHandle,
+    private val movieRepository: MovieRepository
 ): ViewModel() {
     private val movieId: Int = savedStateHandle["movieId"] ?: 0
 
@@ -23,55 +24,6 @@ class BookingViewModel(
         private set
     var paymentState by mutableStateOf(PaymentState())
         private set
-
-    private val fakeData = MovieBooking(
-        id = 1,
-        title = "Deadpool & Wolverine",
-        description = "Lorem ipsum dolor sit amet",
-        duration = 128,
-        releaseDate = "2023-05-15",
-        poster = "",
-        genres = listOf("Action", "Adventure"),
-        availableTheaters = listOf(
-            TheaterSchedule(
-                theaterId = 1,
-                theaterName = "Theater Diamond",
-                section = 3,
-                row = 12,
-                column = 10,
-                availableDates = listOf(
-                    DateSchedule(
-                        date = "Mon\n25 Oct",
-                        availableTimes = listOf(
-                            TimeSchedule(
-                                scheduleId = 1,
-                                time = "10:00",
-                                filledSeats = listOf("A1", "A2", "B1", "B2"),
-                                price = 50000
-                            ),
-                            TimeSchedule(
-                                scheduleId = 2,
-                                time = "13:00",
-                                filledSeats = listOf("A1", "A2", "B1", "B2"),
-                                price = 50000
-                            ),
-                        )
-                    ),
-                    DateSchedule(
-                        date = "Tue\n26 Oct",
-                        availableTimes = listOf(
-                            TimeSchedule(
-                                scheduleId = 3,
-                                time = "10:00",
-                                filledSeats = listOf("A1", "A2", "B1", "B2"),
-                                price = 50000
-                            ),
-                       )
-                    )
-                )
-            )
-        )
-    )
 
     private var movieScheduleResponse: MovieBooking? = null
     private var currentTheaterSchedule: TheaterSchedule? = null
@@ -83,74 +35,48 @@ class BookingViewModel(
     private fun loadBookingData() {
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true)
-            delay(2000)
 
-            if (fakeData.availableTheaters.isNotEmpty()) {
-                val firstTheater = fakeData.availableTheaters.first()
-                currentTheaterSchedule = firstTheater
+            movieRepository.getMovieById(movieId).fold(
+                onSuccess = { response ->
+                    movieScheduleResponse = response
+                    val movie = MovieDetail(
+                        id = movieId,
+                        title = response.title,
+                        description = response.description,
+                        duration = response.duration,
+                        releaseDate = formatDateToYear(response.releaseDate),
+                        poster = response.poster,
+                        genres = response.genres
+                    )
+                    if (response.availableTheaters.isNotEmpty()) {
+                        val firstTheater = response.availableTheaters.first()
+                        currentTheaterSchedule = firstTheater
 
-                val movie = MovieDetail(
-                    id = movieId,
-                    title = fakeData.title,
-                    description = fakeData.description,
-                    duration = fakeData.duration,
-                    releaseDate = formatDateToYear(fakeData.releaseDate),
-                    posterUrl = fakeData.poster,
-                    genres = fakeData.genres
-                )
-                val theater = createTheaterFromResponse(firstTheater)
-                val seats = generateSeatsForTheater(theater, emptyList())
+                        val theater = createTheaterFromResponse(firstTheater)
+                        val seats = generateSeatsForTheater(theater, emptyList())
 
-                uiState = uiState.copy(
-                    movie = movie,
-                    theaters = fakeData.availableTheaters.map { createTheaterFromResponse(it) },
-                    selectedTheater = theater,
-                    availableDates = firstTheater.availableDates,
-                    seats = seats,
-                    isLoading = false
-                )
-            } else {
-                uiState = uiState.copy(
-                    isLoading = false,
-                )
-            }
-//            repository.getMovieSchedules(movieId).fold(
-//                onSuccess = { response ->
-//                    movieScheduleResponse = response
-//
-//                    if (response.availableTheaters.isNotEmpty()) {
-//                        val firstTheater = response.availableTheaters.first()
-//                        currentTheaterSchedule = firstTheater
-//
-//                        val movie = Movie(
-//                            id = movieId,
-//                            title = response.title
-//                        )
-//                        val theater = createTheaterFromResponse(firstTheater)
-//                        val seats = generateSeatsForTheater(theater, emptyList())
-//
-//                        uiState = uiState.copy(
-//                            movie = movie,
-//                            theaters = response.availableTheaters.map { createTheaterFromResponse(it) },
-//                            selectedTheater = theater,
-//                            availableDates = firstTheater.availableDates,
-//                            seats = seats,
-//                            isLoading = false
-//                        )
-//                    } else {
-//                        uiState = uiState.copy(
-//                            isLoading = false,
-//                            errorMessage = "No schedules available"
-//                        )
-//                    }
-//                },
-//                onFailure = { error ->
-//                    uiState = uiState.copy(
-//                        isLoading = false,
-//                        errorMessage = error.message ?: "Failed to load schedules"
-//                    )
-//                }
-//            )
+                        uiState = uiState.copy(
+                            movie = movie,
+                            theaters = response.availableTheaters.map { createTheaterFromResponse(it) },
+                            selectedTheater = theater,
+                            availableDates = firstTheater.availableDates,
+                            seats = seats,
+                            isLoading = false
+                        )
+                    } else {
+                        uiState = uiState.copy(
+                            movie = movie,
+                            isLoading = false,
+                        )
+                    }
+                },
+                onFailure = { error ->
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        errorMessage = error.message ?: "Failed to load schedules"
+                    )
+                }
+            )
         }
     }
 

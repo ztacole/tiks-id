@@ -51,7 +51,7 @@ fun TicketDetailScreen(
 
                 TicketDisplay(
                     title = uiState.ticket.movie.title,
-                    genre = uiState.ticket.movie.genre,
+                    genre = uiState.ticket.movie.genre[0],
                     duration = uiState.ticket.movie.duration,
                     theater = uiState.ticket.theater,
                     schedule = uiState.ticket.schedule,
@@ -74,7 +74,7 @@ private fun Prev() {
                         movie = Movie(
                             id = 1,
                             title = "Deadpool & Wolverine",
-                            genre = "Action",
+                            genre = listOf("Action"),
                             duration = 128,
                             poster = ""
                         ),

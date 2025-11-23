@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,7 +29,6 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,10 +43,9 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
 import com.zetta.tiksid.R
-import com.zetta.tiksid.data.model.DateSchedule
 import com.zetta.tiksid.data.model.TimeSchedule
 import com.zetta.tiksid.ui.components.AppButton
 import com.zetta.tiksid.ui.components.AppDialog
@@ -54,8 +53,6 @@ import com.zetta.tiksid.ui.components.AppDropdown
 import com.zetta.tiksid.ui.components.screen.GenreChip
 import com.zetta.tiksid.ui.components.screen.SeatItem
 import com.zetta.tiksid.ui.components.screen.SelectableChip
-import com.zetta.tiksid.ui.theme.AppTheme
-import com.zetta.tiksid.utils.formatDateToYear
 import com.zetta.tiksid.utils.formatRupiah
 
 @Composable
@@ -114,9 +111,20 @@ fun BookingScreen(
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.dummy_poster),
+                    SubcomposeAsyncImage(
+                        model = uiState.movie?.poster,
                         contentDescription = null,
+                        loading = {
+                            Box(modifier = Modifier.fillMaxSize())
+                        },
+                        error = {
+                            Image(
+                                painter = painterResource(id = R.drawable.error_image_placeholder),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        },
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.FillWidth
                     )

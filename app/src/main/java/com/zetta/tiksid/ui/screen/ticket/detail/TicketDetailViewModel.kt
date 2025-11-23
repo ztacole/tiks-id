@@ -22,7 +22,7 @@ class TicketDetailViewModel(
         movie = Movie(
             id = 1,
             title = "Deadpool & Wolverine",
-            genre = "Action",
+            genre = listOf("Action"),
             duration = 128,
             poster = ""
         ),

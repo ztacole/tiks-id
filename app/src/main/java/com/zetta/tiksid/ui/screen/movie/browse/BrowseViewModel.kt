@@ -5,28 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zetta.tiksid.data.model.Movie
-import kotlinx.coroutines.delay
+import com.zetta.tiksid.data.repository.MovieRepository
 import kotlinx.coroutines.launch
 
 class BrowseViewModel(
-
+    private val repository: MovieRepository
 ): ViewModel() {
     var uiState by mutableStateOf(BrowseUiState())
         private set
 
     private var currentPage = 1
-    private val pageSize = 20
-
-    private val allMovies = List(100) {
-        Movie(
-            id = it + 1,
-            title = "Movie ${it + 1}",
-            poster = "",
-            genre = "Action",
-            duration = 128
-        )
-    }
+    private val pageSize = 16
 
     init {
         loadMovies()
@@ -41,21 +30,27 @@ class BrowseViewModel(
                 uiState = uiState.copy(isLoading = true)
             }
 
-            delay(2000) // simulasi API
+            repository.getMovies(page = currentPage, limit = pageSize)
+                .onSuccess {
+                    val newData = it.data
+                    currentPage = it.meta.page
 
-            val start = (currentPage - 1) * pageSize
-            val end = minOf(start + pageSize, allMovies.size)
-
-            val newData = allMovies.slice(start until end)
-
-            uiState = uiState.copy(endReached = newData.isEmpty())
-
-            uiState = uiState.copy(
-                movies = uiState.movies + newData,
-                isLoading = false,
-                isRefreshing = false,
-                isLoadingMore = false
-            )
+                    uiState = uiState.copy(
+                        movies = uiState.movies + newData,
+                        isLoading = false,
+                        isRefreshing = false,
+                        isLoadingMore = false,
+                        endReached = newData.isEmpty()
+                    )
+                }
+                .onFailure {
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        isLoadingMore = false,
+                        errorMessage = it.message
+                    )
+                }
 
             if (!uiState.endReached) currentPage++
         }

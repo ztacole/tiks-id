@@ -39,8 +39,8 @@
     <string name="signup_dialog_title_failed">Sign Up Failed</string>
 
     <!--  Home  -->
-    <string name="home_text_featured_movie">Featured Movie</string>
-    <string name="home_text_new_titles">New Titles</string>
+    <string name="home_text_recently_released">Recently Released</string>
+    <string name="home_text_other_movies">Other Movies</string>
 
     <!--  Browse Movies  -->
     <string name="browse_text_all_movies">All Movies</string>

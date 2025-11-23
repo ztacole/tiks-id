@@ -49,7 +49,7 @@ fun HomeScreen(
         item {
             Spacer(Modifier.padding(top = 24.dp))
             Text(
-                text = stringResource(R.string.home_text_featured_movie),
+                text = stringResource(R.string.home_text_recently_released),
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
@@ -64,7 +64,7 @@ fun HomeScreen(
                 )
             } else {
                 MovieCard(
-                    movie = uiState.featuredMovie!!,
+                    movie = uiState.recentlyReleasedMovie!!,
                     onClick = onNavigateToMovieDetail,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -77,7 +77,7 @@ fun HomeScreen(
         }
         item {
             Text(
-                text = stringResource(R.string.home_text_new_titles),
+                text = stringResource(R.string.home_text_other_movies),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
@@ -115,12 +115,12 @@ private fun HomeScreenPrev() {
         ) {
             HomeScreen(
                 uiState = HomeUiState(
-                    featuredMovie = Movie(
+                    recentlyReleasedMovie = Movie(
                         id = 1,
                         title = "Deadpool & Wolverine",
                         duration = 128,
                         poster = "",
-                        genre = "Action"
+                        genre = listOf("Action")
                     ),
                     movies = List(12) {
                         Movie(
@@ -128,7 +128,7 @@ private fun HomeScreenPrev() {
                             title = "Title ${it + 1}",
                             duration = 128,
                             poster = "",
-                            genre = "Action"
+                            genre = listOf("Action")
                         )
                     }
                 ),

@@ -31,7 +31,7 @@ data class MovieDetail(
     val id: Int,
     val title: String,
     val description: String,
-    val posterUrl: String,
+    val poster: String,
     val releaseDate: String,
     val duration: Int,
     val genres: List<String>,

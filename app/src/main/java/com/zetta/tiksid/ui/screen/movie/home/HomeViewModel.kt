@@ -5,32 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zetta.tiksid.data.model.Movie
-import kotlinx.coroutines.delay
+import com.zetta.tiksid.data.repository.MovieRepository
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-
+    private val repository: MovieRepository
 ): ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
-
-    private val featuredMovie = Movie(
-        id = 1,
-        title = "Deadpool & Wolverine",
-        poster = "",
-        genre = "Action",
-        duration = 128
-    )
-    private val movies = List(20) {
-        Movie(
-            id = it + 1,
-            title = "Movie ${it + 1}",
-            poster = "",
-            genre = "Action",
-            duration = 128
-        )
-    }
 
     init {
         loadMovies()
@@ -39,13 +21,23 @@ class HomeViewModel(
     fun loadMovies() {
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true)
-            delay(2000)
 
-            uiState = uiState.copy(
-                featuredMovie = featuredMovie,
-                movies = movies,
-                isLoading = false
-            )
+            repository.getMovies(page = 1, limit = 12)
+                .onSuccess {
+                    val recentlyReleasedMovie = it.data.firstOrNull()
+                    val movies = it.data.drop(1)
+                    uiState = uiState.copy(
+                        recentlyReleasedMovie = recentlyReleasedMovie,
+                        movies = movies,
+                        isLoading = false
+                    )
+                }
+                .onFailure {
+                    uiState = uiState.copy(
+                        errorMessage = it.message,
+                        isLoading = false
+                    )
+                }
         }
     }
 }
