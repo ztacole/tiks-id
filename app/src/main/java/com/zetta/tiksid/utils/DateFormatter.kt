@@ -15,6 +15,6 @@ fun formatDateToDateTimeMinute(input: String): String {
     val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     val date = dateFormatter.parse(input)
 
-    val dateTimeFormatter = SimpleDateFormat("yyyy MMM dd HH:mm", Locale.getDefault())
+    val dateTimeFormatter = SimpleDateFormat("yyyy MMM dd - HH:mm", Locale.getDefault())
     return dateTimeFormatter.format(date!!)
 }

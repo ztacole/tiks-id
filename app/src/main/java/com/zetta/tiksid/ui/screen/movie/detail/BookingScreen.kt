@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,6 +45,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -171,6 +175,34 @@ fun BookingScreen(
                                         seats = uiState.seats,
                                         onSelectSeat = onSelectSeat
                                     )
+                                    Spacer(Modifier.height(16.dp))
+                                    Text(
+                                        text = stringResource(R.string.detail_text_cinema_screen),
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.Gray
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Canvas(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(24.dp),
+                                    ) {
+                                        val path = Path()
+                                        path.moveTo(24.dp.toPx(), -size.height / 2)
+                                        path.quadraticTo(
+                                            size.width / 2,
+                                            size.height,
+                                            size.width - 24.dp.toPx(),
+                                            -size.height / 2
+                                        )
+                                        drawPath(
+                                            path = path,
+                                            color = Color.Gray,
+                                            style = Stroke(width = 4.dp.toPx())
+                                        )
+                                    }
                                 }
                             }
                         }

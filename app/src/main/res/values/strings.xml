@@ -47,6 +47,7 @@
     
     <!--  Movie Detail  -->
     <string name="detail_text_theater">Theater</string>
+    <string name="detail_text_cinema_screen">Cinema Screen</string>
     <string name="detail_text_date">Date</string>
     <string name="detail_text_available_time">Available Time</string>
     <string name="detail_text_choose_seat">Choose Seat</string>

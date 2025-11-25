@@ -310,8 +310,13 @@ class BookingViewModel(
             seatSections[section.id] = LinkedHashMap()
         }
 
+        var disableRowCharCount = 0
         for (colIndex in 0 until theater.columnCount) {
-            val rowLabel = ('A' + colIndex).toString()
+            var rowLabel = 'A' + colIndex + disableRowCharCount
+            if (rowLabel == 'I' || rowLabel == 'O') {
+                disableRowCharCount++
+                rowLabel++
+            }
 
             for (row in 1..theater.rowCount) {
                 val seatId = "$rowLabel$row"
@@ -322,7 +327,7 @@ class BookingViewModel(
 
                 val seat = Seat(
                     id = seatId,
-                    row = rowLabel,
+                    row = rowLabel.toString(),
                     column = row,
                     sectionId = section.id,
                     displayLabel = seatId,
