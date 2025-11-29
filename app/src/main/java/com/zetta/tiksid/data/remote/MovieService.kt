@@ -1,7 +1,7 @@
 package com.zetta.tiksid.data.remote
 
 import com.zetta.tiksid.data.model.Movie
-import com.zetta.tiksid.data.model.MovieBooking
+import com.zetta.tiksid.data.model.MovieOverview
 import com.zetta.tiksid.data.model.common.BaseResponse
 import com.zetta.tiksid.data.model.common.MetaResponse
 import com.zetta.tiksid.utils.safeApiCall
@@ -17,7 +17,7 @@ class MovieService(private val client: HttpClient) {
         client.get("$BASE_ROUTE?page=$page&per_page=$limit")
     }
 
-    suspend fun getMovieById(id: Int): Result<BaseResponse<MovieBooking>> = safeApiCall {
+    suspend fun getMovieById(id: Int): Result<BaseResponse<MovieOverview>> = safeApiCall {
         client.get("$BASE_ROUTE/$id")
     }
 }

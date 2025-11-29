@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zetta.tiksid.data.model.MovieBooking
+import com.zetta.tiksid.data.model.MovieOverview
 import com.zetta.tiksid.data.model.TheaterSchedule
 import com.zetta.tiksid.data.model.TimeSchedule
 import com.zetta.tiksid.data.repository.MovieRepository
@@ -28,7 +28,7 @@ class BookingViewModel(
     var paymentState by mutableStateOf(PaymentState())
         private set
 
-    private var movieScheduleResponse: MovieBooking? = null
+    private var movieScheduleResponse: MovieOverview? = null
 
     init {
         loadBookingData()
